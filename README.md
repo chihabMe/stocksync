@@ -48,3 +48,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 Special thanks to Professor Seghiri Akram and the faculty members at Université Abdelhamid Mehri Constantine 2 for their guidance and support throughout the project.
 
+# stocksync
