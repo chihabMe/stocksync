@@ -7,6 +7,7 @@ urlpatterns = [
 ]
 api_v1 = [
     path("api/v1/auth/", include("authentication.urls")),
+    path("api/v1/accounts/", include("accounts.urls")),
 ]
 
 urlpatterns += api_v1
