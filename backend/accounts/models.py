@@ -1,3 +1,4 @@
+from core.base_model import BaseModel
 from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
@@ -25,7 +26,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class CustomUser(AbstractUser, PermissionsMixin):
+class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
 
     class UserTypesChoices(models.TextChoices):
         USER = "user"
