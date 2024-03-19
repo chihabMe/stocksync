@@ -1,34 +1,69 @@
+from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from django_password_validators.password_character_constraints.validators import (
-    validate_password_contains_digit, validate_password_contains_lowercase,
-    validate_password_contains_uppercase)
-from django_password_validators.password_history.validators import \
-    validate_password_no_repeated_passwords
-
-# Create your models here.
 
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("The Email field must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
-    class Meta:
-        model = User
-        fields = ["email", "username", "password", "password2"]
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("user_type", CustomUser.UserTypesChoices.ADMIN)
 
-    def validate_password(self, value):
-        # Use django-password-validators validators
-        validate_password_contains_digit(value)
-        validate_password_contains_lowercase(value)
-        validate_password_contains_uppercase(value)
-        validate_password_no_repeated_passwords(value)
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
-        return value
+        return self.create_user(email, password, **extra_fields)
 
-    def validate_password2(self, value):
-        # Your existing password validation logic
-        # ...
 
-    def create(self, validated_data):
-        # Your existing create method
-        # ...
+class CustomUser(AbstractUser, PermissionsMixin):
+
+    class UserTypesChoices(models.TextChoices):
+        USER = "user"
+        ADMIN = "admin"
+        SELLER = "seller"
+
+    first_name = models.CharField("first name", max_length=200, blank=True)
+    last_name = models.CharField("last name", max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField("active", default=True)
+    is_staff = models.BooleanField("is staff", default=False)
+
+    user_type = models.CharField(
+        max_length=20, choices=UserTypesChoices.choices, default=UserTypesChoices.USER
+    )
+    email = models.EmailField("email address", unique=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ()
+
+    username = models.CharField(
+        max_length=100,
+        unique=True,
+        null=True,
+        blank=True,
+    )
+
+    def is_user(self):
+        return self.user_type == "user"
+
+    def is_admin(self):
+        return self.user_type == "student"
+
+    def is_seller(self):
+        return self.user_type == "seller"
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.email
