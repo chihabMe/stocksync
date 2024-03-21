@@ -88,6 +88,6 @@ class SellerProfile(BaseModel):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.user_type == CustomUser.UserTypesChoices.USER:
-            UserProfile.objects.create(user=instance)
+            UserProfile.objects.get_or_create(user=instance)
         elif instance.user_type == CustomUser.UserTypesChoices.SELLER:
-            SellerProfile.objects.create(user=instance)
+            SellerProfile.objects.get_or_create(user=instance)

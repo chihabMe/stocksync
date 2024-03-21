@@ -60,4 +60,4 @@ class SellerProfileSerializer(serializers.ModelSerializer):
         fields = [
             "user",
             "id",
-        ]  # Add SellerProfile fields here
+        ]
