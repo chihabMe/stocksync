@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import UserCreationForm
-from .models import CustomUser
+from .models import CustomUser, SellerProfile, UserProfile
 
 User = get_user_model()
 
@@ -56,5 +56,18 @@ class CustomUserAdmin(UserAdmin):
     # Remove or update the ordering attribute
     ordering = ("email",)
 
+
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("user",)
+    search_fields = ()
+
+
+class SellerProfileAdmin(admin.ModelAdmin):
+    list_display = ("user",)
+    # search_fields = ()
+
+
+admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(SellerProfile, SellerProfileAdmin)
 
 admin.site.register(CustomUser, CustomUserAdmin)

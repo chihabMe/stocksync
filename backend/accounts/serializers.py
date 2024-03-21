@@ -1,3 +1,4 @@
+from accounts.models import SellerProfile, UserProfile
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -33,3 +34,30 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         validated_data.pop("password2")
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["email", "first_name", "last_name", "username"]
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ["user", "id"]
+
+
+class SellerProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = SellerProfile
+        fields = [
+            "user",
+            "id",
+        ]  # Add SellerProfile fields here
