@@ -3,7 +3,6 @@ from rest_framework.mixins import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import CustomUser as User
-from .models import SellerProfile, UserProfile
 from .serializers import (
     SellerProfileSerializer,
     UserProfileSerializer,
