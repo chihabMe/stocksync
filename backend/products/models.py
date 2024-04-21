@@ -24,7 +24,7 @@ class Product(BaseModel):
     stock = models.PositiveIntegerField(default=1)
 
     def featured_image(self):
-        featured = self.images.fitler(is_feautred=True).first()
+        featured = self.images.fitler(is_featured=True).first()
         if featured:
             return featured
         return self.image.first()
@@ -40,8 +40,8 @@ def prodcut_image_uploader(instance, filename):
     return os.path.join("products", str(instance.product.id), filename)
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=prodcut_image_uploader)  
+    image = models.ImageField(upload_to=prodcut_image_uploader,max_length=500)  
     caption = models.CharField(max_length=255, blank=True, null=True)
-    is_feautred = models.BooleanField(default=False)
+    is_featured = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.product.name} - {self.caption if self.caption else 'Image'}"
