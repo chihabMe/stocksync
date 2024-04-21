@@ -28,11 +28,13 @@ class Product(BaseModel):
         if featured:
             return featured
         return self.image.first()
-
-    def save(self,*args,**kwargs):
+    def save(self, *args, **kwargs):
+        print('runnig')
         if not self.slug:
             self.slug = slugify(self.name)
-        super().save(*args,**kwargs)
+            while Product.objects.filter(slug=self.slug).exists():
+                self.slug = '{}-{}'.format(slugify(self.name), Product.objects.filter(name=self.name).count())
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.name
