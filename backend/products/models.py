@@ -6,7 +6,7 @@ from django.utils.text import slugify
 # Create your models here.
 class ProductCategory(BaseModel):
     name = models.CharField(max_length=100,unique=True)
-    slug = models.SlugField(max_length=120, unique=True)
+    slug = models.SlugField(max_length=120, unique=True,blank=True)
     parent = models.ForeignKey("self",null=True,blank=True,on_delete=models.CASCADE,related_name='children')
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -36,11 +36,11 @@ class Product(BaseModel):
 
     def __str__(self) -> str:
         return self.name
-def __image_uploader(instance, filename):
+def prodcut_image_uploader(instance, filename):
     return os.path.join("products", str(instance.product.id), filename)
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=__image_uploader)  
+    image = models.ImageField(upload_to=prodcut_image_uploader)  
     caption = models.CharField(max_length=255, blank=True, null=True)
     is_feautred = models.BooleanField(default=False)
     def __str__(self):
