@@ -1,12 +1,17 @@
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
-from rest_framework.mixins import Response
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView,RetrieveAPIView,ListAPIView,GenericAPIView,RetrieveUpdateDestroyAPIView
+from rest_framework.mixins import Response,DestroyModelMixin,UpdateModelMixin
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from .permissions import IsAdmin
+from .models import SellerProfile
 
 from .models import CustomUser as User
 from .serializers import (
     SellerProfileSerializer,
+    SellerProfileSerializerForAdmin,
     UserProfileSerializer,
     UserRegistrationSerializer,
+
+    UserSerializer
 )
 
 
@@ -15,8 +20,30 @@ class UserRegistrationView(CreateAPIView):
     permission_classes = [AllowAny]
 
 
+class SellersListView(ListAPIView):
+    serializer_class = SellerProfileSerializer
+    permission_classes = [IsAuthenticated,IsAdmin]
+
+    def get_queryset(self):
+        return SellerProfile.objects.all()
+    
+class AdminGetAcceptRemoveSeller(RetrieveUpdateDestroyAPIView):
+    serializer_class = SellerProfileSerializerForAdmin
+    permission_classes = [IsAuthenticated,IsAdmin]
+    lookup_field = "id"
+
+    def get_queryset(self):
+        print(self.request)
+        return SellerProfile.objects.all()
+
+
+
+
+
+
+
+
 class UserProfileUpdateRetrieveView(RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         user_type = self.request.user.user_type

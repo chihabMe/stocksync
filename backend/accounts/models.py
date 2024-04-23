@@ -82,6 +82,7 @@ class SellerProfile(BaseModel):
     user = models.ForeignKey(
         CustomUser, related_name="seller_profile", on_delete=models.CASCADE
     )
+    is_active = models.BooleanField(default=False)
 
 
 @receiver(post_save, sender=CustomUser)

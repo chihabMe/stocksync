@@ -41,7 +41,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["email", "first_name", "last_name", "username"]
+        fields = ["email", "first_name", "last_name", "username","user_type"]
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -58,6 +58,16 @@ class SellerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellerProfile
         fields = [
-            "user",
             "id",
+            "user",
+            "is_active",
+            "created_at"
         ]
+
+
+
+class SellerProfileSerializerForAdmin(SellerProfileSerializer):
+    def update(self,instance:SellerProfile,validated_data):
+        instance.is_active = validated_data.get("is_active",instance.is_active)
+        instance.save()
+        return instance
