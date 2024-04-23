@@ -3,6 +3,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from .serializers import AuthenticatedUserSerializer
 
 
 class TokenLogoutView(APIView):
@@ -17,3 +19,11 @@ class TokenLogoutView(APIView):
             pass
         data = {"message": "Successfully logged out"}
         return Response(status=status.HTTP_200_OK, data=data)
+
+
+class AuthenticatedUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = AuthenticatedUserSerializer(request.user)
+        return Response(serializer.data)

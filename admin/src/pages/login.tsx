@@ -25,8 +25,8 @@ export default function LoginPage() {
     try {
       const response = await axios.post(url, form)
       if (response.data) {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
+        localStorage.setItem('accessToken', response.data.access);
+        localStorage.setItem('refreshToken', response.data.refresh);
         navigate("/admin")
       }
     } catch (err) {
