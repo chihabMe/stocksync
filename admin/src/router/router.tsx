@@ -3,9 +3,14 @@ import {
 } from "react-router-dom";
 import LoginPage from "@/pages/login";
 import SellersPage from "@/pages/sellers";
-import UserActivation from "@/pages/activation_requests"
 import ErrorPage from "@/pages/errors/generate";
+import ActivationRequests from "@/pages/activation_requests"
 import AdminLayout from "@/components/layout/admin_layout";
+import ClientsPage from "@/pages/clients";
+import ProductsPage from "@/pages/products";
+import ComplainsPage from "@/pages/complains";
+import StatisticsPage from "@/pages/statistics";
+import CategoriesPage from "@/pages/categories";
 
 
 export const router = createBrowserRouter([
@@ -20,13 +25,35 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
 
         children: [
+
+            {
+                path: "statistics",
+                element: <StatisticsPage />
+            },
             {
                 path: "sellers",
                 element: <SellersPage />
             },
             {
+                path: "clients",
+                element: <ClientsPage />
+            },
+
+            {
+                path: "categories",
+                element: <CategoriesPage />
+            },
+            {
                 path: "activation-requests",
-                element: <UserActivation />
+                element: <ActivationRequests />
+            },
+            {
+                path: "products",
+                element: <ProductsPage />
+            },
+            {
+                path: "complains",
+                element: <ComplainsPage />
             },
 
 
