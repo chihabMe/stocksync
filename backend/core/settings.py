@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
     # local
     "accounts",
     "authentication",
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -178,3 +180,8 @@ MEDIA_URL ="/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 APPEND_SLASH=False
+
+CORS_ALLOWED_ORIGINS = [
+    os.environ.get("WEB_CLIENT_HOST"),
+]
+print(CORS_ALLOWED_ORIGINS)
