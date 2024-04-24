@@ -1,6 +1,7 @@
-import { Link, Outlet, useLocation, useNavigate, useNavigation } from 'react-router-dom'
-import ProtectedWrapper from '../wrappers/Protected_wrapper'
+import { Link, Outlet, useLocation } from 'react-router-dom'
+import ProtectedWrapper from '../wrappers/ProtectedWrapper'
 import { cn } from '@/lib/utils'
+import Navbar from './navbar'
 const links = [
     {
         path: "/admin",
@@ -34,8 +35,9 @@ const links = [
 const AdminLayout = () => {
     return (
         <ProtectedWrapper>
-            <main className='w-full mx-auto flex min-h-screen'>
-                <aside className='w-64  text-white'>
+            <Navbar />
+            <main className='  mx-auto   container max-w-screen-2xl   flex min-h-screen'>
+                <aside className='w-72    text-white'>
                     <div className='flex flex-col px-4 py-8 space-y-4 min-h-screen'>
                         {links.map(link => (
                             <NavItem to={link.path} text={link.text} />
@@ -54,7 +56,7 @@ const NavItem = (props: { to: string, text: string }) => {
     const location = useLocation()
     const isActive = location.pathname == props.to
     return (
-        <Link to={props.to} className={cn("w-full   text-gray-900 font-medium   py-2 px-4 hover:text-primary rounded-lg transition-colors duration-200", `${isActive && "bg-primary text-white hover:text-white !shadow-lg  "}`)} >
+        <Link to={props.to} className={cn("w-full   text-gray-900 font-medium   py-2 px-4 hover:text-primary rounded-lg transition-colors duration-200", `${isActive && "bg-primary text-white hover:text-white   "}`)} >
             <span className='capitalize'>
                 {props.text}
             </span>

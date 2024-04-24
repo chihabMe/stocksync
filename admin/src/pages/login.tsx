@@ -7,7 +7,9 @@ import axios from "axios"
 import { ontainTokenEndpoint } from "@/utils/api_endpoints"
 import { env } from "@/env"
 import { cn } from "@/lib/utils"
-import { useNavigate  } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
+import useAuth from "@/hooks/useAuth"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 const initialForm = {
   email: "",
   password: ""
@@ -16,6 +18,7 @@ const initialForm = {
 export default function LoginPage() {
   const [form, setForm] = useState(initialForm)
   const [isError, setIsError] = useState(false)
+  const { isLoading, user } = useAuth()
 
   const navigate = useNavigate()
   const handleFormSubmit = async (e: FormEvent) => {
@@ -37,9 +40,13 @@ export default function LoginPage() {
     if (isError) setIsError(false)
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
+  if (isLoading)
+    return <div className="w-full min-h-screen flex justify-center items-center"><LoadingSpinner className="text-primary w-12 h-12" /></div>
+  if (user)
+    return <Navigate to="/admin" />
   return (
     <main className="w-full min-h-screen flex justify-center items-center">
-      <Card className="w-full max-w-md">
+      < Card className="w-full max-w-md" >
         <CardHeader>
           <CardTitle className="text-2xl">Signin</CardTitle>
           <CardDescription> to access the admin dashboard you have to provide a valid email and password
@@ -61,7 +68,7 @@ export default function LoginPage() {
 
           </form>
         </CardContent>
-      </Card>
-    </main>
+      </Card >
+    </main >
   )
 }

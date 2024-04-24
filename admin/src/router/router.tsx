@@ -11,6 +11,7 @@ import ProductsPage from "@/pages/products";
 import ComplainsPage from "@/pages/complains";
 import StatisticsPage from "@/pages/statistics";
 import CategoriesPage from "@/pages/categories";
+import DashboardPage from "@/pages/dashboard";
 
 
 export const router = createBrowserRouter([
@@ -25,11 +26,12 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
 
         children: [
-
             {
-                path: "statistics",
-                element: <StatisticsPage />
+                path:"",
+                element:<DashboardPage/>
+
             },
+
             {
                 path: "sellers",
                 element: <SellersPage />
@@ -54,6 +56,10 @@ export const router = createBrowserRouter([
             {
                 path: "complains",
                 element: <ComplainsPage />
+            },
+            {
+                path: "statistics",
+                element: <StatisticsPage />
             },
 
 
