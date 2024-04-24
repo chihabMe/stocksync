@@ -5,7 +5,7 @@ import useAuth from "@/hooks/useAuth"
 import { LoadingSpinner } from "../ui/loading-spinner"
 
 const Navbar = () => {
-    const { user, isLoading } = useAuth()
+    const { user, isLoading,logout } = useAuth()
     if (isLoading || !user) return <LoadingSpinner />
     return (
         <nav className="flex justify-end container max-w-screen-2xl py-2">
@@ -34,7 +34,7 @@ const Navbar = () => {
                                 </span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="hover:!bg-red-400 flex space-x-4  cursor-pointer hover:!text-white h-10">
+                            <DropdownMenuItem onClick={logout} className="hover:!bg-red-400 flex space-x-4  cursor-pointer hover:!text-white h-10">
                                 <LogOutIcon className="w-5 h-5" />
                                 <span>
                                     Logout

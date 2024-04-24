@@ -1,16 +1,19 @@
 import useAuth from "@/hooks/useAuth";
 import { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { LoadingSpinner } from "../ui/loading-spinner";
 
 const ProtectedWrapper = ({ children }: { children: ReactNode }) => {
 
     const { isLoading, user } = useAuth()
     const navigate = useNavigate()
-    if (isLoading) return <h1>loading</h1>
+    if (isLoading)
+        return <div className="w-full min-h-screen flex justify-center items-center"><LoadingSpinner className="text-primary w-12 h-12" /></div>
     if (!user || user.user_type != "admin") {
-        navigate("/errors/unauthorized")
-        return <></>
+        return <Navigate to="/" />
     }
+    if (user.user_type != "admin")
+        navigate("/errors/unauthorized")
 
     return (
         <>{children}</>
