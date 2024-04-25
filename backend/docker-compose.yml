@@ -14,12 +14,13 @@ services:
       DB_HOST: db
       DB_PORT: '3306'
       WEB_CLIENT_HOST: 'http://localhost:5173'
-    volumes:
-      - ./:/app
+    # volumes:
+    #   - ./:/app
     restart: unless-stopped
     mem_limit: 500m  # Limit memory to 500 MB
     depends_on:
       - db 
+      # - redis 
   
   db:
     container_name: stocksync_mysql_db
@@ -37,4 +38,12 @@ services:
     volumes:
       - ./docker_volumes/db:/var/lib/mysql
     restart: unless-stopped
+  # redis:
+  #   container_name: stocnsync_redis
+  #   image: redis:7.2-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   command: redis-server --save 20 1 --loglevel warning --requirepass pass
+  #   volumes:
+  #     - ./docker_volumes/redis:/data
 
