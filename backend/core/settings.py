@@ -18,9 +18,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG").upper() == "TRUE"
-
-ALLOWED_HOSTS = []
+print(os.getenv("DEBUG"))
+DEBUG = os.getenv("DEBUG","").upper() == "TRUE"
+print("KEY",SECRET_KEY)
+ALLOWED_HOSTS = ["loclhost","127.0.0.1"]
+HOST = os.getenv("HOST")
+if HOST:
+    ALLOWED_HOSTS.append(HOST)
 
 
 # Application definition

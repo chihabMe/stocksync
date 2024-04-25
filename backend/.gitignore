@@ -10,6 +10,7 @@ media
 
 # Backup files # 
 *.bak 
+docker_volumes
 
 # If you are using PyCharm # 
 # User-specific stuff

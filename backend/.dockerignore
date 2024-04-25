@@ -1,2 +1,10 @@
-*/venv
-*/media
+**/venv/
+**/media/
+**/docker_volumes/
+**/.env*
+/venv/
+/media/
+/docker_volumes/
+/.env*
+venv
+media
