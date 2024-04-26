@@ -35,6 +35,7 @@ import {
   getClient,
   toggleClientActivationState,
 } from "@/services/clients.services";
+import { toast } from "@/components/ui/use-toast";
 
 const ClientsPage = () => {
   const { isLoading, isError, data } = useQuery({
@@ -54,8 +55,8 @@ const ClientsPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="hidden w-[100px] sm:table-cell">
-                <span className="sr-only">Image</span>
+              <TableHead className="">
+                image
               </TableHead>
               <TableHead>email</TableHead>
               <TableHead>name</TableHead>
@@ -93,6 +94,14 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
   });
   const activeUserMutton = useMutation({
     mutationFn: toggleClientActivationState,
+    onSuccess: (data) => {
+
+      toast({
+        variant:"success",
+        title: `User ${data.data.user.is_active ? "activated" : "deactivated"}`,
+      }
+      );
+    },
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({
         queryKey: ["clients"],
@@ -109,7 +118,10 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
       return { previousActivationRequests };
     },
     onError: (err, data, context) => {
-      queryClient.setQueryData(["clients"], context?.previousActivationRequests);
+      queryClient.setQueryData(
+        ["clients"],
+        context?.previousActivationRequests
+      );
     },
   });
   const handleUserActivation = () => {

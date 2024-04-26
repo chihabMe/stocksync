@@ -57,8 +57,8 @@ const ActivationRequestsPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="hidden w-[100px] sm:table-cell">
-                <span className="sr-only">Image</span>
+              <TableHead className="">
+                image
               </TableHead>
               <TableHead>email</TableHead>
               <TableHead>name</TableHead>
