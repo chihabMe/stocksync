@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
-import { ontainTokenEndpoint } from "@/utils/api_endpoints";
+import { obtainTokenEndpoint } from "@/utils/api_endpoints";
 import { env } from "@/env";
 import { cn } from "@/lib/utils";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ export default function LoginPage() {
   const handleFormSubmit = async (e: FormEvent) => {
     setIsLogin(true);
     e.preventDefault();
-    const url = env.VITE_SERVER_HOST + ontainTokenEndpoint;
+    const url = env.VITE_SERVER_HOST + obtainTokenEndpoint;
 
     try {
       const response = await axios.post(url, form);

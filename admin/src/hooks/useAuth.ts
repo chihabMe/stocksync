@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { axiosClient } from "@/lib/axios"
-import { currentAuthUserEndopint } from "@/utils/api_endpoints";
+import { currentAuthUserEndpoint } from "@/utils/api_endpoints";
 interface User {
     username: string;
     email: string
@@ -15,7 +15,7 @@ export default function useAuth() {
         const fetchUser = async () => {
             setIsLoading(true)
             try {
-                const response = await axiosClient.get<User>(currentAuthUserEndopint)
+                const response = await axiosClient.get<User>(currentAuthUserEndpoint)
                 if (response.data) {
                     setUser(response.data)
                 }
