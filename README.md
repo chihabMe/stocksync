@@ -9,6 +9,7 @@ The E-Commerce Mobile Application aims to address the challenges faced by users 
 ## Features
 
 - **User Roles:**
+
   - Client: Can search for products, place orders, track order status, use coupons, and file complaints.
   - Store (Storekeeper): Can manage online product inventory, initiate/cancel deliveries, offer discounts, and handle complaints.
   - Application Administrator: Manages new store registrations, handles user accounts, and reviews application anomalies.
@@ -49,3 +50,28 @@ This project is licensed under the [MIT License](LICENSE).
 Special thanks to Professor Seghiri Akram and the faculty members at Université Abdelhamid Mehri Constantine 2 for their guidance and support throughout the project.
 
 # stocksync
+
+env variables for docker
+
+```
+SECRET_KEY='secret'
+# DEBUG: 'TRUE'
+HOST='localhost'
+DB_NAME='stocksync'
+DB_USER='user'
+DB_PASSWORD='password'
+DB_HOST=db
+DB_PORT='3306'
+WEB_CLIENT_HOST='http://localhost'
+
+##vite app
+VITE_SERVER_HOST="http://localhost:8000"
+
+##mysql
+
+MYSQL_DATABASE="stocksync"
+MYSQL_USER="user"
+MYSQL_PASSWORD="password"
+MYSQL_ROOT_PASSWORD="password"
+
+```
