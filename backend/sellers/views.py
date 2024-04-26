@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .serializers import SellerProfileSerializer,SellerProfileSerializerForAdmin
 from .models import SellerProfile
 from rest_framework.permissions import IsAuthenticated
+from accounts.serializers import UserSerializer
 
 from common.permissions import IsSellerOrAdmin,IsAdmin
 from rest_framework.generics import ListAPIView,RetrieveUpdateDestroyAPIView
@@ -15,6 +16,13 @@ class SellersListView(ListAPIView):
     def get_queryset(self):
         return SellerProfile.objects.all()
 
+
+class SellersActivationRequestsListView(ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated,IsAdmin]
+    def get_queryset(self):
+        return  User.objects.filter(is_active=False,user_type=User.UserTypesChoices.SELLER)
+
 class SellerDetailserializer(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated,IsSellerOrAdmin]
     lookup_field = "id"
@@ -27,7 +35,6 @@ class SellerDetailserializer(RetrieveUpdateDestroyAPIView):
         if user_type == User.UserTypesChoices.ADMIN:
             return SellerProfileSerializerForAdmin
         return SellerProfileSerializer
-        return super().get_serializer_class()
 
 
 
