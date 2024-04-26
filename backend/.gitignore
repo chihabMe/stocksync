@@ -1,4 +1,5 @@
 venv
+static
 .env
 # Django #
 *.log

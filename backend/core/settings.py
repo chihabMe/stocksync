@@ -21,7 +21,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 print(os.getenv("DEBUG"))
 DEBUG = os.getenv("DEBUG","").upper() == "TRUE"
 print("KEY",SECRET_KEY)
-ALLOWED_HOSTS = ["loclhost","127.0.0.1"]
+ALLOWED_HOSTS = ["localhost","127.0.0.1"]
 HOST = os.getenv("HOST")
 if HOST:
     ALLOWED_HOSTS.append(HOST)
@@ -182,6 +182,8 @@ SIMPLE_JWT = {
 
 MEDIA_URL ="/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static"
 
 APPEND_SLASH=False
 

@@ -10,6 +10,7 @@ done
 
 #migrte the django app
 python manage.py migrate
+python manage.py collectstatic --no-input
 
 
 # start the server
