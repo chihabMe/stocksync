@@ -4,6 +4,7 @@ import { axiosClient } from "@/lib/axios";
 import {
   activateSellerEndpoint,
   sellersActivationRequestEndpoint,
+  sellersListEndpoint,
 } from "@/utils/api_endpoints";
 
 export const getSellersActivationRequest = async () => {
@@ -26,4 +27,8 @@ export const approveSellerActivationRequest = async ({
     }
   );
   return response.data;
+};
+
+export const getSellers = async () => {
+  return (await axiosClient.get<IUser[]>(sellersListEndpoint)).data;
 };

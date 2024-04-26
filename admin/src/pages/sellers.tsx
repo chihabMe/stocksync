@@ -1,8 +1,8 @@
 import {
   approveSellerActivationRequest,
-  getSellersActivationRequest,
+  getSellers,
 } from "@/services/sellers.services";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { MoreHorizontal } from "lucide-react";
 
@@ -34,25 +34,20 @@ import {
 import IUser from "@/interfaces/IUser";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
-import ISeller from "@/interfaces/ISeller";
 
 const SellersPage = () => {
   const { isLoading, isError, data } = useQuery({
-    queryKey: ["sellers-activation-requests"],
-    queryFn: getSellersActivationRequest,
+    queryKey: ["sellers"],
+    queryFn: getSellers,
   });
-  console.log(isLoading);
-  console.log(data);
   if (isLoading) return <LoadingSpinner />;
   if (!data) return <h1>error</h1>;
 
   return (
     <Card className="">
       <CardHeader>
-        <CardTitle>Activation requests </CardTitle>
-        <CardDescription>
-          you can see all of the activation request and take actions on them
-        </CardDescription>
+        <CardTitle>Sellers</CardTitle>
+        <CardDescription>list of all active sellers</CardDescription>
       </CardHeader>
       <CardContent className="min-h-[65vh]">
         <Table>
@@ -99,13 +94,13 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
     mutationFn: approveSellerActivationRequest,
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({
-        queryKey: ["sellers-activation-requests"],
+        queryKey: ["sellers"],
       });
       const previousActivationRequests = queryClient.getQueryData<IUser[]>([
-        "sellers-activation-requests",
+        "sellers",
       ]);
       queryClient.setQueryData(
-        ["sellers-activation-requests"],
+        ["sellers"],
         (old: IUser[]) => {
           return old.map((item) => {
             if (item.id == id) return { ...item, is_active: !item.is_active };
@@ -117,7 +112,7 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
     },
     onError: (err, data, context) => {
       queryClient.setQueryData(
-        ["sellers-activation-requests"],
+        ["sellers"],
         context?.previousActivationRequests
       );
     },
@@ -145,9 +140,13 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
       </TableCell>
       <TableCell>
         {user.is_active ? (
-          <Badge variant="success" className="w-[80px] flex justify-center" >active</Badge>
+          <Badge variant="success" className="w-[80px] flex justify-center">
+            active
+          </Badge>
         ) : (
-          <Badge variant="destructive" className="w-[80px] flex justify-center">inactive</Badge>
+          <Badge variant="destructive" className="w-[80px] flex justify-center">
+            inactive
+          </Badge>
         )}
       </TableCell>
       <TableCell className="hidden md:table-cell">{user.user_type}</TableCell>

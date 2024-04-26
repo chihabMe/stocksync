@@ -8,3 +8,4 @@ export const sellersActivationRequestEndpoint = "/api/v1/sellers/requests/"
 export const activateSellerEndpoint = "/api/v1/sellers/"
 
 export const sellersListEndpoint = "/api/v1/sellers/"
+export const clientsListEndpoint = "/api/v1/clients/"
