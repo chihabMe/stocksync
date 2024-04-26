@@ -2,7 +2,7 @@ FROM python:3.11-alpine
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /backend
 
 RUN apk add --no-cache \
     build-base \
