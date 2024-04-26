@@ -1,4 +1,4 @@
-from accounts.models import SellerProfile, UserProfile
+from accounts.models import  UserProfile
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -51,23 +51,3 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ["user", "id"]
 
-
-class SellerProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
-    class Meta:
-        model = SellerProfile
-        fields = [
-            "id",
-            "user",
-            "is_active",
-            "created_at"
-        ]
-
-
-
-class SellerProfileSerializerForAdmin(SellerProfileSerializer):
-    def update(self,instance:SellerProfile,validated_data):
-        instance.is_active = validated_data.get("is_active",instance.is_active)
-        instance.save()
-        return instance

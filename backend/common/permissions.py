@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from .models import CustomUser as User
+from accounts.models import CustomUser as User
 
 
 class IsAdmin(BasePermission):
@@ -10,6 +10,10 @@ class IsAdmin(BasePermission):
 class IsSeller(BasePermission):
     def has_permission(self, request, view):
         return request.user.user_type == User.UserTypesChoices.SELLER
+
+class IsSellerOrAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.user_type == User.UserTypesChoices.SELLER or request.user.user_type == User.UserTypesChoices.ADMIN
 
 class IsUser(BasePermission):
     def has_permission(self, request, view):

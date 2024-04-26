@@ -1,8 +1,7 @@
 from common.base_model import BaseModel
-from django.contrib.auth.hashers import receiver
 from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from django.db.models.base import post_save
+
 
 
 class CustomUserManager(BaseUserManager):
@@ -77,18 +76,3 @@ class UserProfile(BaseModel):
         CustomUser, related_name="user_profile", on_delete=models.CASCADE
     )
 
-
-class SellerProfile(BaseModel):
-    user = models.ForeignKey(
-        CustomUser, related_name="seller_profile", on_delete=models.CASCADE
-    )
-    is_active = models.BooleanField(default=False)
-
-
-@receiver(post_save, sender=CustomUser)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        if instance.user_type == CustomUser.UserTypesChoices.USER:
-            UserProfile.objects.get_or_create(user=instance)
-        elif instance.user_type == CustomUser.UserTypesChoices.SELLER:
-            SellerProfile.objects.get_or_create(user=instance)

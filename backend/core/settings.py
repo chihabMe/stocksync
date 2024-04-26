@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     # local
     "accounts",
     "authentication",
-    "products"
+    "products",
+    "sellers",
 ]
 
 MIDDLEWARE = [
