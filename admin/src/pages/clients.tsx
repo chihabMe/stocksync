@@ -31,7 +31,10 @@ import {
 import IUser from "@/interfaces/IUser";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
-import { getClient } from "@/services/clients.services";
+import {
+  getClient,
+  toggleClientActivationState,
+} from "@/services/clients.services";
 
 const ClientsPage = () => {
   const { isLoading, isError, data } = useQuery({
@@ -89,15 +92,15 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
     minute: "numeric",
   });
   const activeUserMutton = useMutation({
-    mutationFn: approveSellerActivationRequest,
+    mutationFn: toggleClientActivationState,
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({
-        queryKey: ["client"],
+        queryKey: ["clients"],
       });
       const previousActivationRequests = queryClient.getQueryData<IUser[]>([
-        "client",
+        "clients",
       ]);
-      queryClient.setQueryData(["client"], (old: IUser[]) => {
+      queryClient.setQueryData(["clients"], (old: IUser[]) => {
         return old.map((item) => {
           if (item.id == id) return { ...item, is_active: !item.is_active };
           return item;
@@ -106,7 +109,7 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
       return { previousActivationRequests };
     },
     onError: (err, data, context) => {
-      queryClient.setQueryData(["client"], context?.previousActivationRequests);
+      queryClient.setQueryData(["clients"], context?.previousActivationRequests);
     },
   });
   const handleUserActivation = () => {
