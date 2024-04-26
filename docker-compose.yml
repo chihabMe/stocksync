@@ -3,6 +3,8 @@ version: '3.8'
 services:
   backend:
     container_name: stocksync_backend
+    mem_limit: 500m
+    cpus: 0.5
     build:
       context: ./backend
     ports:
@@ -19,15 +21,14 @@ services:
       DB_HOST: db
       DB_PORT: '3306'
       WEB_CLIENT_HOST: 'http://localhost'
-    mem_limit: 500m
     restart: unless-stopped
     depends_on:
       - db
   admin-web:
     build:
       context: ./admin
-    ports:
-      - "4173:4173"
+    # ports:
+    #   - "4173:4173"
     depends_on:
       - backend
     environment:
@@ -35,6 +36,8 @@ services:
     volumes:
       - ./volumes/admin-web:/admin/dist/
     restart: unless-stopped
+
+
     # mem_limit: 500m
   nginx:
     image: nginx:1.25-alpine
