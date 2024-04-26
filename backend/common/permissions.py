@@ -17,4 +17,4 @@ class IsSellerOrAdmin(BasePermission):
 
 class IsUser(BasePermission):
     def has_permission(self, request, view):
-        return request.user.user_type == User.UserTypesChoices.USER
+        return request.user.user_type == User.UserTypesChoices.CLIENT

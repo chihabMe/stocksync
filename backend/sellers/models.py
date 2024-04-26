@@ -20,7 +20,5 @@ class SellerProfile(BaseModel):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        if instance.user_type == User.UserTypesChoices.USER:
-            User.objects.get_or_create(user=instance)
-        elif instance.user_type == User.UserTypesChoices.SELLER:
+        if instance.user_type == User.UserTypesChoices.SELLER:
             SellerProfile.objects.get_or_create(user=instance)

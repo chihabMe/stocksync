@@ -30,7 +30,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
 
     class UserTypesChoices(models.TextChoices):
-        USER = "user"
+        CLIENT = "client"
         ADMIN = "admin"
         SELLER = "seller"
 
@@ -42,7 +42,7 @@ class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
     is_staff = models.BooleanField("is staff", default=False)
 
     user_type = models.CharField(
-        max_length=20, choices=UserTypesChoices.choices, default=UserTypesChoices.USER
+        max_length=20, choices=UserTypesChoices.choices, default=UserTypesChoices.CLIENT
     )
     email = models.EmailField("email address", unique=True)
 
@@ -56,23 +56,18 @@ class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
         blank=True,
     )
 
-    def is_user(self):
-        return self.user_type == "user"
+    def is_client(self):
+        return self.user_type == CustomUser.UserTypesChoices.CLIENT
 
     def is_admin(self):
-        return self.user_type == "student"
+        return self.user_type == CustomUser.UserTypesChoices.ADMIN
 
     def is_seller(self):
-        return self.user_type == "seller"
+        return self.user_type == CustomUser.UserTypesChoices.SELLER
 
     objects = CustomUserManager()
 
     def __str__(self):
         return self.email
 
-
-class UserProfile(BaseModel):
-    user = models.ForeignKey(
-        CustomUser, related_name="user_profile", on_delete=models.CASCADE
-    )
 

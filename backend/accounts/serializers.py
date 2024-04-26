@@ -1,4 +1,3 @@
-from accounts.models import  UserProfile
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -44,10 +43,4 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id","email","is_active", "username","user_type","created_at"]
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
-    class Meta:
-        model = UserProfile
-        fields = ["user", "id"]
 

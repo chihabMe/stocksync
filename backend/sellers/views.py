@@ -11,11 +11,12 @@ from django.contrib.auth import get_user_model
 User  = get_user_model()
 
 class SellersListView(ListAPIView):
-    serializer_class = SellerProfileSerializer
+    serializer_class = UserSerializer
     permission_classes = [IsAuthenticated,IsAdmin]
 
+
     def get_queryset(self):
-        return SellerProfile.objects.all()
+        return User.objects.filter(is_active=True,user_type=User.UserTypesChoices.SELLER)
 
 
 class SellersActivationRequestsListView(ListAPIView):
