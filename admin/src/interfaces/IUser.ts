@@ -5,4 +5,5 @@ export default interface IUser {
   is_active: boolean;
   user_type: "admin" | "seller" | "client";
   created_at: string;
+  image?: string;
 }

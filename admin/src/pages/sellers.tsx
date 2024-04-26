@@ -1,5 +1,8 @@
-import { getSellersActivationRequest } from "@/services/sellers.services";
-import { useQuery } from "@tanstack/react-query";
+import {
+  approveSellerActivationRequest,
+  getSellersActivationRequest,
+} from "@/services/sellers.services";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
 import { MoreHorizontal } from "lucide-react";
 
@@ -30,10 +33,12 @@ import {
 } from "@/components/ui/table";
 import IUser from "@/interfaces/IUser";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { queryClient } from "@/main";
+import ISeller from "@/interfaces/ISeller";
 
 const SellersPage = () => {
   const { isLoading, isError, data } = useQuery({
-    queryKey: ["sellersactivationrequest"],
+    queryKey: ["sellers-activation-requests"],
     queryFn: getSellersActivationRequest,
   });
   console.log(isLoading);
@@ -56,16 +61,14 @@ const SellersPage = () => {
               <TableHead className="hidden w-[100px] sm:table-cell">
                 <span className="sr-only">Image</span>
               </TableHead>
-              <TableHead>name</TableHead>
               <TableHead>email</TableHead>
+              <TableHead>name</TableHead>
               <TableHead className="hidden md:table-cell">status</TableHead>
+              <TableHead className="hidden md:table-cell">user type</TableHead>
               <TableHead className="hidden md:table-cell">
-                user type
+                registered at
               </TableHead>
-              <TableHead className="hidden md:table-cell">registered at</TableHead>
-              <TableHead>
-                actions
-              </TableHead>
+              <TableHead>actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -85,15 +88,54 @@ const SellersPage = () => {
 };
 
 const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
-  const created_at = new Date(user.created_at).toLocaleDateString("en-US", {day: "numeric", month: "short", year: "numeric",hour: "numeric", minute: "numeric"})
+  const created_at = new Date(user.created_at).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+  const activeUserMutton = useMutation({
+    mutationFn: approveSellerActivationRequest,
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({
+        queryKey: ["sellers-activation-requests"],
+      });
+      const previousActivationRequests = queryClient.getQueryData<IUser[]>([
+        "sellers-activation-requests",
+      ]);
+      queryClient.setQueryData(
+        ["sellers-activation-requests"],
+        (old: IUser[]) => {
+          return old.map((item) => {
+            if (item.id == id) return { ...item, is_active: !item.is_active };
+            return item;
+          });
+        }
+      );
+      return { previousActivationRequests };
+    },
+    onError: (err, data, context) => {
+      queryClient.setQueryData(
+        ["sellers-activation-requests"],
+        context?.previousActivationRequests
+      );
+    },
+  });
+  const handleUserActivation = () => {
+    activeUserMutton.mutate({
+      id: user.id,
+      is_active: !user.is_active,
+    });
+  };
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
         <img
-          alt="Product image"
+          alt="seller image"
           className="aspect-square rounded-md object-cover"
           height="64"
-          src="/placeholder.svg"
+          src={user?.image}
           width="64"
         />
       </TableCell>
@@ -102,7 +144,11 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
         {user.username ?? "None"}
       </TableCell>
       <TableCell>
-        <Badge variant="destructive">inactive</Badge>
+        {user.is_active ? (
+          <Badge variant="success" className="w-[80px] flex justify-center" >active</Badge>
+        ) : (
+          <Badge variant="destructive" className="w-[80px] flex justify-center">inactive</Badge>
+        )}
       </TableCell>
       <TableCell className="hidden md:table-cell">{user.user_type}</TableCell>
       <TableCell className="hidden md:table-cell">{created_at}</TableCell>
@@ -115,11 +161,17 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel >Actions</DropdownMenuLabel>
-            <DropdownMenuItem className="cursor-pointer">Active</DropdownMenuItem>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={handleUserActivation}
+              className="cursor-pointer"
+            >
+              {user.is_active ? <span>Inactive</span> : <span>Active</span>}
+              {activeUserMutton.isPending && <LoadingSpinner />}
+            </DropdownMenuItem>
             <DropdownMenuItem className="text-destructive cursor-pointer hover:!text-white hover:!bg-destructive">
               Delete
-              </DropdownMenuItem>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>

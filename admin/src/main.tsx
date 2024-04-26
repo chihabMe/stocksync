@@ -7,7 +7,7 @@ import { router } from "@/router/router.tsx"
 import './index.css'
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
