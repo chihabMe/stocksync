@@ -62,7 +62,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Subscriptions
+                    requests
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Active Now
+                    Active Sellers
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +149,7 @@ export default function Dashboard() {
                 <CardHeader>
                   <CardTitle>Recent Sales</CardTitle>
                   <CardDescription>
-                    You made 265 sales this month.
+                    you have 200 activation request 104 complies
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
