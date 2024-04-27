@@ -36,7 +36,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
 
 const SellersPage = () => {
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading,  data } = useQuery({
     queryKey: ["sellers"],
     queryFn: getSellers,
   });
@@ -110,7 +110,8 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
       );
       return { previousActivationRequests };
     },
-    onError: (err, data, context) => {
+    onError: (err,data, context) => {
+      console.log(err,data)
       queryClient.setQueryData(
         ["sellers"],
         context?.previousActivationRequests

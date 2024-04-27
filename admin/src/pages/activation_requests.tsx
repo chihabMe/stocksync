@@ -2,7 +2,7 @@ import {
   approveSellerActivationRequest,
   getSellersActivationRequest,
 } from "@/services/sellers.services";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import {  useMutation, useQuery } from "@tanstack/react-query";
 
 import { MoreHorizontal } from "lucide-react";
 
@@ -36,7 +36,7 @@ import { queryClient } from "@/main";
 import { Button } from "@/components/ui/button";
 
 const ActivationRequestsPage = () => {
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading,  data } = useQuery({
     queryKey: ["sellers-activation-requests"],
     queryFn: getSellersActivationRequest,
   });
@@ -115,6 +115,7 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
       return { previousActivationRequests };
     },
     onError: (err, data, context) => {
+      console.log(err,data)
       queryClient.setQueryData(
         ["sellers-activation-requests"],
         context?.previousActivationRequests

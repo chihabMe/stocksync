@@ -95,8 +95,8 @@ export default function LoginPage() {
                 />
               </div>
               <Button type="submit" className="flex justify-center relative ">
-                {!isLoading && <span>login</span>}
-                {isLoading && <LoadingSpinner className="w-4 h-4 " />}
+                {!isLogin && <span>login</span>}
+                {isLogin && <LoadingSpinner className="w-4 h-4 " />}
               </Button>
             </div>
           </form>
