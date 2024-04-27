@@ -35,6 +35,15 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
 import { Button } from "@/components/ui/button";
 import { deleteClientMutation } from "@/services/clients.services";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const ActivationRequestsPage = () => {
   const { isLoading, data } = useQuery({
@@ -80,6 +89,34 @@ const ActivationRequestsPage = () => {
         <div className="text-xs text-muted-foreground">
           Showing <strong>1-10</strong> of <strong>32</strong> products
         </div>
+
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious className="hover:bg-primary hover:text-white" href="#"  />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationLink href="#">2</PaginationLink>
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationLink href="#">3</PaginationLink>
+            </PaginationItem>
+
+
+
+            {/* <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem> */}
+            <PaginationItem className="">
+              <PaginationNext href="#" className="hover:bg-primary hover:text-white" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </CardFooter>
     </Card>
   );
@@ -146,26 +183,33 @@ const UserDeletionAction = ({ user }: { user: IUser }) => {
   const deleteUserMutation = useMutation({
     mutationFn: deleteClientMutation,
     onMutate: async (id) => {
-      console.log("mutate")
-    console.log(id)
+      console.log("mutate");
+      console.log(id);
       await queryClient.cancelQueries({
         queryKey: ["sellers-activation-requests"],
       });
-      const previousRequests = queryClient.getQueryData<IUser[]>(["sellers-activation-requests"]);
-      queryClient.setQueryData(["sellers-activation-requests"], (old: IUser[]) => {
-        console.log(old)
-        return old.filter((item) => item.id !== id);
-      });
+      const previousRequests = queryClient.getQueryData<IUser[]>([
+        "sellers-activation-requests",
+      ]);
+      queryClient.setQueryData(
+        ["sellers-activation-requests"],
+        (old: IUser[]) => {
+          console.log(old);
+          return old.filter((item) => item.id !== id);
+        }
+      );
       return { previousRequests };
     },
     onError: (err, data, context) => {
       console.log(err, data);
-      queryClient.setQueryData(["sellers-activation-requests"], context?.previousRequests);
+      queryClient.setQueryData(
+        ["sellers-activation-requests"],
+        context?.previousRequests
+      );
     },
   });
 
   const handleUserDeletion = () => {
-    console.log("hi")
     deleteUserMutation.mutate(user.id);
   };
 
