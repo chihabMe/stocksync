@@ -31,13 +31,14 @@ import IUser from "@/interfaces/IUser";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
 import {
+  deleteClientMutation,
   getClient,
   toggleClientActivationState,
 } from "@/services/clients.services";
 import { toast } from "@/components/ui/use-toast";
 
 const ClientsPage = () => {
-  const { isLoading,  data } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["clients"],
     queryFn: getClient,
   });
@@ -54,9 +55,7 @@ const ClientsPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="">
-                image
-              </TableHead>
+              <TableHead className="">image</TableHead>
               <TableHead>email</TableHead>
               <TableHead>name</TableHead>
               <TableHead className="hidden md:table-cell">status</TableHead>
@@ -91,45 +90,6 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
     hour: "numeric",
     minute: "numeric",
   });
-  const activeUserMutton = useMutation({
-    mutationFn: toggleClientActivationState,
-    onSuccess: (data) => {
-
-      toast({
-        variant:"success",
-        title: `User ${data.data.user.is_active ? "activated" : "deactivated"}`,
-      }
-      );
-    },
-    onMutate: async ({ id }) => {
-      await queryClient.cancelQueries({
-        queryKey: ["clients"],
-      });
-      const previousActivationRequests = queryClient.getQueryData<IUser[]>([
-        "clients",
-      ]);
-      queryClient.setQueryData(["clients"], (old: IUser[]) => {
-        return old.map((item) => {
-          if (item.id == id) return { ...item, is_active: !item.is_active };
-          return item;
-        });
-      });
-      return { previousActivationRequests };
-    },
-    onError: (err, data, context) => {
-      console.log(err,data)
-      queryClient.setQueryData(
-        ["clients"],
-        context?.previousActivationRequests
-      );
-    },
-  });
-  const handleUserActivation = () => {
-    activeUserMutton.mutate({
-      id: user.id,
-      is_active: !user.is_active,
-    });
-  };
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
@@ -168,20 +128,105 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={handleUserActivation}
-              className="cursor-pointer"
-            >
-              {user.is_active ? <span>Inactive</span> : <span>Active</span>}
-              {activeUserMutton.isPending && <LoadingSpinner />}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive cursor-pointer hover:!text-white hover:!bg-destructive">
-              Delete
-            </DropdownMenuItem>
+            <ClientActivationAction user={user} />
+            <ClientDeletionAction user={user} />
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
     </TableRow>
+  );
+};
+
+const ClientDeletionAction = ({ user }: { user: IUser }) => {
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteClientMutation,
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({
+        queryKey: ["clients"],
+      });
+      const previousRequests = queryClient.getQueryData<IUser[]>([
+        "clients",
+      ]);
+      queryClient.setQueryData(
+        ["clients"],
+        (old: IUser[]) => {
+          console.log(old);
+          return old.filter((item) => item.id !== id);
+        }
+      );
+      return { previousRequests };
+    },
+    onError: (err, data, context) => {
+      queryClient.setQueryData(
+        ["clients"],
+        context?.previousRequests
+      );
+    },
+  });
+
+  const handleUserDeletion = () => {
+    deleteUserMutation.mutate(user.id,{
+      onSuccess:()=>{
+        toast({
+          variant: "success",
+          title: `User deleted successfully`,
+        });
+      }
+    });
+  };
+
+  return (
+    <DropdownMenuItem
+      onClick={handleUserDeletion}
+      className="text-destructive cursor-pointer hover:!text-white hover:!bg-destructive"
+    >
+      Delete
+    </DropdownMenuItem>
+  );
+};
+const ClientActivationAction = ({ user }: { user: IUser }) => {
+  const activeUserMutton = useMutation({
+    mutationFn: toggleClientActivationState,
+    onSuccess: (data) => {
+      toast({
+        variant: "success",
+        title: `User ${data.data.user.is_active ? "activated" : "deactivated"}`,
+      });
+    },
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({
+        queryKey: ["clients"],
+      });
+      const previousActivationRequests = queryClient.getQueryData<IUser[]>([
+        "clients",
+      ]);
+      queryClient.setQueryData(["clients"], (old: IUser[]) => {
+        return old.map((item) => {
+          if (item.id == id) return { ...item, is_active: !item.is_active };
+          return item;
+        });
+      });
+      return { previousActivationRequests };
+    },
+    onError: (err, data, context) => {
+      console.log(err, data);
+      queryClient.setQueryData(
+        ["clients"],
+        context?.previousActivationRequests
+      );
+    },
+  });
+  const handleUserActivation = () => {
+    activeUserMutton.mutate({
+      id: user.id,
+      is_active: !user.is_active,
+    });
+  };
+  return (
+    <DropdownMenuItem onClick={handleUserActivation} className="cursor-pointer">
+      {user.is_active ? <span>Inactive</span> : <span>Active</span>}
+      {activeUserMutton.isPending && <LoadingSpinner />}
+    </DropdownMenuItem>
   );
 };
 

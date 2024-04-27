@@ -2,9 +2,9 @@ import {
   approveSellerActivationRequest,
   getSellersActivationRequest,
 } from "@/services/sellers.services";
-import {  useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, User } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -34,9 +34,10 @@ import IUser from "@/interfaces/IUser";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
 import { Button } from "@/components/ui/button";
+import { deleteClientMutation } from "@/services/clients.services";
 
 const ActivationRequestsPage = () => {
-  const { isLoading,  data } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["sellers-activation-requests"],
     queryFn: getSellersActivationRequest,
   });
@@ -57,9 +58,7 @@ const ActivationRequestsPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="">
-                image
-              </TableHead>
+              <TableHead className="">image</TableHead>
               <TableHead>email</TableHead>
               <TableHead>name</TableHead>
               <TableHead className="hidden md:table-cell">status</TableHead>
@@ -94,40 +93,6 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
     hour: "numeric",
     minute: "numeric",
   });
-  const activeUserMutton = useMutation({
-    mutationFn: approveSellerActivationRequest,
-    onMutate: async ({ id }) => {
-      await queryClient.cancelQueries({
-        queryKey: ["sellers-activation-requests"],
-      });
-      const previousActivationRequests = queryClient.getQueryData<IUser[]>([
-        "sellers-activation-requests",
-      ]);
-      queryClient.setQueryData(
-        ["sellers-activation-requests"],
-        (old: IUser[]) => {
-          return old.map((item) => {
-            if (item.id == id) return { ...item, is_active: !item.is_active };
-            return item;
-          });
-        }
-      );
-      return { previousActivationRequests };
-    },
-    onError: (err, data, context) => {
-      console.log(err,data)
-      queryClient.setQueryData(
-        ["sellers-activation-requests"],
-        context?.previousActivationRequests
-      );
-    },
-  });
-  const handleUserActivation = () => {
-    activeUserMutton.mutate({
-      id: user.id,
-      is_active: !user.is_active,
-    });
-  };
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
@@ -166,16 +131,8 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={handleUserActivation}
-              className="cursor-pointer"
-            >
-              {user.is_active ? <span>Inactive</span> : <span>Active</span>}
-              {activeUserMutton.isPending && <LoadingSpinner />}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive cursor-pointer hover:!text-white hover:!bg-destructive">
-              Delete
-            </DropdownMenuItem>
+            <UserActivationAction user={user} />
+            <UserDeletionAction user={user} />
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
@@ -184,3 +141,84 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
 };
 
 export default ActivationRequestsPage;
+
+const UserDeletionAction = ({ user }: { user: IUser }) => {
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteClientMutation,
+    onMutate: async (id) => {
+      console.log("mutate")
+    console.log(id)
+      await queryClient.cancelQueries({
+        queryKey: ["sellers-activation-requests"],
+      });
+      const previousRequests = queryClient.getQueryData<IUser[]>(["sellers-activation-requests"]);
+      queryClient.setQueryData(["sellers-activation-requests"], (old: IUser[]) => {
+        console.log(old)
+        return old.filter((item) => item.id !== id);
+      });
+      return { previousRequests };
+    },
+    onError: (err, data, context) => {
+      console.log(err, data);
+      queryClient.setQueryData(["sellers-activation-requests"], context?.previousRequests);
+    },
+  });
+
+  const handleUserDeletion = () => {
+    console.log("hi")
+    deleteUserMutation.mutate(user.id);
+  };
+
+  return (
+    <DropdownMenuItem
+      onClick={handleUserDeletion}
+      className="text-destructive cursor-pointer hover:!text-white hover:!bg-destructive"
+    >
+      Delete
+    </DropdownMenuItem>
+  );
+};
+
+const UserActivationAction = ({ user }: { user: IUser }) => {
+  const activeUserMutton = useMutation({
+    mutationFn: approveSellerActivationRequest,
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({
+        queryKey: ["sellers-activation-requests"],
+      });
+      const previousActivationRequests = queryClient.getQueryData<IUser[]>([
+        "sellers-activation-requests",
+      ]);
+      queryClient.setQueryData(
+        ["sellers-activation-requests"],
+        (old: IUser[]) => {
+          return old.map((item) => {
+            if (item.id == id) return { ...item, is_active: !item.is_active };
+            return item;
+          });
+        }
+      );
+      return { previousActivationRequests };
+    },
+    onError: (err, data, context) => {
+      console.log(err, data);
+      queryClient.setQueryData(
+        ["sellers-activation-requests"],
+        context?.previousActivationRequests
+      );
+    },
+  });
+
+  const handleUserActivation = () => {
+    activeUserMutton.mutate({
+      id: user.id,
+      is_active: !user.is_active,
+    });
+  };
+  return (
+    <DropdownMenuItem onClick={handleUserActivation} className="cursor-pointer">
+      {user.is_active ? <span>Inactive</span> : <span>Active</span>}
+      {activeUserMutton.isPending && <LoadingSpinner />}
+    </DropdownMenuItem>
+  );
+};

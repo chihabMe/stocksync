@@ -1,6 +1,9 @@
 import IUser from "@/interfaces/IUser";
 import { axiosClient } from "@/lib/axios";
-import { clientManagerEndpoint, clientsListEndpoint } from "@/utils/api_endpoints";
+import {
+  clientManagerEndpoint,
+  clientsListEndpoint,
+} from "@/utils/api_endpoints";
 
 export const getClient = async () => {
   return (await axiosClient.get<IUser[]>(clientsListEndpoint)).data;
@@ -20,4 +23,8 @@ export const toggleClientActivationState = async ({
   return await axiosClient.put(`${clientManagerEndpoint}${id}/`, {
     is_active,
   });
+};
+
+export const deleteClientMutation = async (id: string) => {
+  return await axiosClient.delete(`${clientManagerEndpoint}${id}/`);
 };
