@@ -1,3 +1,4 @@
+import IListResponse from "@/interfaces/IListResponse";
 import ISeller from "@/interfaces/ISeller";
 import IUser from "@/interfaces/IUser";
 import { axiosClient } from "@/lib/axios";
@@ -7,10 +8,15 @@ import {
   sellersListEndpoint,
 } from "@/utils/api_endpoints";
 
-export const getSellersActivationRequest = async () => {
-  const response = await axiosClient.get<IUser[]>(
-    sellersActivationRequestEndpoint
-  );
+export const getSellersActivationRequests = async ({
+  page,
+}: {
+  page?: number;
+} = {}) => {
+  let pathWithQueries = sellersActivationRequestEndpoint;
+  if (page) pathWithQueries += `?page=${page}`;
+
+  const response = await axiosClient.get<IListResponse<IUser>>(pathWithQueries);
   return response.data;
 };
 export const approveSellerActivationRequest = async ({

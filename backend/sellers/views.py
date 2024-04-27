@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .serializers import SellerProfileSerializer,SellerProfileSerializerForAdmin
 from .models import SellerProfile
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from accounts.serializers import UserSerializer
 from django.shortcuts import get_object_or_404
 
@@ -21,7 +21,8 @@ class SellersListView(ListAPIView):
 
 class SellersActivationRequestsListView(ListAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated,IsAdmin]
+    # permission_classes = [IsAuthenticated,IsAdmin]
+    permission_classes = [AllowAny]
     def get_queryset(self):
         return  User.objects.filter(is_active=False,user_type=User.UserTypesChoices.SELLER)
 # class ActiveSellerAccount(RetrieveUpdateDestroyAPIView):

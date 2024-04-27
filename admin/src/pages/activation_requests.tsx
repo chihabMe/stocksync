@@ -1,6 +1,6 @@
 import {
   approveSellerActivationRequest,
-  getSellersActivationRequest,
+  getSellersActivationRequests,
 } from "@/services/sellers.services";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -38,20 +38,24 @@ import { deleteClientMutation } from "@/services/clients.services";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useState } from "react";
 
 const ActivationRequestsPage = () => {
+  const [page, setPage] = useState(1);
+  const increasePage = () => setPage((prev) => prev + 1);
+  const decreasePage = () => setPage((prev) => prev - 1);
+  const goToPage = (page:number) => {
+    if (page >= 1) setPage(page);
+  };
   const { isLoading, data } = useQuery({
-    queryKey: ["sellers-activation-requests"],
-    queryFn: getSellersActivationRequest,
+    queryKey: ["sellers-activation-requests", page],
+    queryFn: () => getSellersActivationRequests({ page }),
   });
-  console.log(isLoading);
-  console.log(data);
   if (isLoading) return <LoadingSpinner />;
   if (!data) return <h1>error</h1>;
 
@@ -79,48 +83,119 @@ const ActivationRequestsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((user) => (
+            {data.results.map((user) => (
               <ActivationRequestRowItem key={user.id} user={user} />
             ))}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter className="">
+        <Paginator
+          page={page}
+          increasePage={increasePage}
+          decreasePage={decreasePage}
+          goToPage={goToPage}
+          hasNext={data.next != null}
+          hasPrev={data.previous != null}
+          totalPages={Math.floor(data.count / 5)}
+        />
         <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
+          Showing <strong>5</strong> of <strong>{data.count}</strong> requests
         </div>
-
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious className="hover:bg-primary hover:text-white" href="#"  />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationLink href="#">2</PaginationLink>
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationLink href="#">3</PaginationLink>
-            </PaginationItem>
-
-
-
-            {/* <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem> */}
-            <PaginationItem className="">
-              <PaginationNext href="#" className="hover:bg-primary hover:text-white" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
       </CardFooter>
     </Card>
   );
 };
+
+interface PaginatorProps {
+  page: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+  increasePage: () => void;
+  decreasePage: () => void;
+  goToPage: (pageNumber: number) => void;
+}
+const Paginator = ({
+  page,
+  totalPages,
+  hasNext,
+  hasPrev,
+  increasePage,
+  decreasePage,
+  goToPage,
+}: PaginatorProps) => {
+  const handlePrevPage = () => {
+    if (hasPrev) decreasePage();
+  };
+
+  const handleNextPage = () => {
+    if (hasNext) increasePage();
+  };
+
+  const handlePageClick = (pageNumber: number) => {
+    goToPage(pageNumber);
+  };
+
+  // Determine the previous and next page based on the current position
+  const previousPage = page - 1;
+  const nextPage = page + 1;
+
+  // Determine the pagination items to display
+  const pagesToDisplay = [];
+
+  if (page > 1) {
+    // Add the previous page if not on the first page
+    pagesToDisplay.push(previousPage);
+  }
+
+  // Always show the current page in the primary color
+  pagesToDisplay.push(page);
+
+  if (page < totalPages) {
+    // Add the next page if not on the last page
+    pagesToDisplay.push(nextPage);
+  }
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            onClick={handlePrevPage}
+            className={`hover:bg-primary ${
+              !hasPrev && 'disabled opacity-40'
+            } hover:text-white`}
+          />
+        </PaginationItem>
+
+        {/* Show the calculated pages to display */}
+        {pagesToDisplay.map((pageNum) => (
+          <PaginationItem key={pageNum}>
+            <PaginationLink
+              onClick={() => handlePageClick(pageNum)}
+              className={
+                pageNum === page ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'
+              }
+            >
+              {pageNum}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+
+        <PaginationItem>
+          <PaginationNext
+            onClick={handleNextPage}
+            className={`hover:bg-primary ${
+              !hasNext && 'disabled opacity-40'
+            } hover:text-white`}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+};
+
 
 const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
   const created_at = new Date(user.created_at).toLocaleDateString("en-US", {

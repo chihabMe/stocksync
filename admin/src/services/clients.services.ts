@@ -5,10 +5,12 @@ import {
   clientsListEndpoint,
 } from "@/utils/api_endpoints";
 
-export const getClient = async () => {
-  return (await axiosClient.get<IUser[]>(clientsListEndpoint)).data;
+export const getClients = async ()=> {
+  let pathWithQueries = clientsListEndpoint;
+  if (page) pathWithQueries += `?page=${page}`;
+  const response = await axiosClient.get<IUser[]>(pathWithQueries);
+  return response.data;
 };
-
 export const deleteClient = async (id: string) => {
   return await axiosClient.delete(`${clientsListEndpoint}${id}/`);
 };

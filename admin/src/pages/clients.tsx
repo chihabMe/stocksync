@@ -32,7 +32,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
 import {
   deleteClientMutation,
-  getClient,
+  getClients,
   toggleClientActivationState,
 } from "@/services/clients.services";
 import { toast } from "@/components/ui/use-toast";
@@ -40,7 +40,8 @@ import { toast } from "@/components/ui/use-toast";
 const ClientsPage = () => {
   const { isLoading, data } = useQuery({
     queryKey: ["clients"],
-    queryFn: getClient,
+    queryFn: getClients,
+
   });
   if (isLoading) return <LoadingSpinner />;
   if (!data) return <h1>error</h1>;
