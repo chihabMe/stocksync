@@ -23,6 +23,3 @@ class ClientManagerSerializer(ClientSerialize):
         instance.save()
         return instance
     
-    def delete(self,instance):
-        instance.user.delete()
-        instance.delete()
