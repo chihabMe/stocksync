@@ -43,15 +43,23 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const ActivationRequestsPage = () => {
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const p = parseInt(searchParams.get("page") as unknown as string) || 1;
+  const [page, setPage] = useState(p);
   const increasePage = () => setPage((prev) => prev + 1);
   const decreasePage = () => setPage((prev) => prev - 1);
-  const goToPage = (page:number) => {
-    if (page >= 1) setPage(page);
+  const goToPage = (page: number) => {
+    if (page >= 1) {
+      setPage(page);
+    }
   };
+  useEffect(() => {
+    setSearchParams({ page: page.toString() });
+  }, [page]);
   const { isLoading, data } = useQuery({
     queryKey: ["sellers-activation-requests", page],
     queryFn: () => getSellersActivationRequests({ page }),
@@ -164,7 +172,7 @@ const Paginator = ({
           <PaginationPrevious
             onClick={handlePrevPage}
             className={`hover:bg-primary ${
-              !hasPrev && 'disabled opacity-40'
+              !hasPrev && "disabled opacity-40"
             } hover:text-white`}
           />
         </PaginationItem>
@@ -175,7 +183,9 @@ const Paginator = ({
             <PaginationLink
               onClick={() => handlePageClick(pageNum)}
               className={
-                pageNum === page ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'
+                pageNum === page
+                  ? "bg-primary text-white"
+                  : "hover:bg-primary hover:text-white"
               }
             >
               {pageNum}
@@ -187,7 +197,7 @@ const Paginator = ({
           <PaginationNext
             onClick={handleNextPage}
             className={`hover:bg-primary ${
-              !hasNext && 'disabled opacity-40'
+              !hasNext && "disabled opacity-40"
             } hover:text-white`}
           />
         </PaginationItem>
@@ -195,7 +205,6 @@ const Paginator = ({
     </Pagination>
   );
 };
-
 
 const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
   const created_at = new Date(user.created_at).toLocaleDateString("en-US", {
