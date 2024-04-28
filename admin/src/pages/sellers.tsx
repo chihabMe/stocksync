@@ -34,10 +34,30 @@ import {
 import IUser from "@/interfaces/IUser";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { queryClient } from "@/main";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import Paginator from "@/components/layout/paginator";
 
 const SellersPage = () => {
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const p = parseInt(searchParams.get("page") as unknown as string) || 1;
+  const [page, setPage] = useState(p);
+  const increasePage = () => setPage((prev) => prev + 1);
+  const decreasePage = () => setPage((prev) => prev - 1);
+
+  const goToPage = (page: number) => {
+    if (page >= 1) {
+      setPage(page);
+    }
+  };
+  useEffect(() => {
+    setSearchParams({ page: page.toString() });
+  }, [page]);
+
+
   const { isLoading,  data } = useQuery({
-    queryKey: ["sellers"],
+    queryKey: ["sellers",page],
     queryFn: getSellers,
   });
   if (isLoading) return <LoadingSpinner />;
@@ -67,15 +87,24 @@ const SellersPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((user) => (
+            {data.results.map((user) => (
               <ActivationRequestRowItem key={user.id} user={user} />
             ))}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter className="">
+        <Paginator
+          page={page}
+          increasePage={increasePage}
+          decreasePage={decreasePage}
+          goToPage={goToPage}
+          hasNext={data.next != null}
+          hasPrev={data.previous != null}
+          totalPages={Math.floor(data.count / 5)}
+        />
         <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
+          Showing <strong>5</strong> of <strong>{data.count}</strong> products
         </div>
       </CardFooter>
     </Card>

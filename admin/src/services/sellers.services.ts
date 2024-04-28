@@ -36,5 +36,5 @@ export const approveSellerActivationRequest = async ({
 };
 
 export const getSellers = async () => {
-  return (await axiosClient.get<IUser[]>(sellersListEndpoint)).data;
+  return (await axiosClient.get<IListResponse<IUser>>(sellersListEndpoint)).data;
 };

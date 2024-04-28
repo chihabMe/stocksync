@@ -36,12 +36,29 @@ import {
   toggleClientActivationState,
 } from "@/services/clients.services";
 import { toast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import IListResponse from "@/interfaces/IListResponse";
+import Paginator from "@/components/layout/paginator";
 
 const ClientsPage = () => {
-  const { isLoading, data } = useQuery({
-    queryKey: ["clients"],
-    queryFn: getClients,
+  const [searchParams, setSearchParams] = useSearchParams();
+  const p = parseInt(searchParams.get("page") as unknown as string) || 1;
+  const [page, setPage] = useState(p);
+  const increasePage = () => setPage((prev) => prev + 1);
+  const decreasePage = () => setPage((prev) => prev - 1);
+  const goToPage = (page: number) => {
+    if (page >= 1) {
+      setPage(page);
+    }
+  };
+  useEffect(() => {
+    setSearchParams({ page: page.toString() });
+  }, [page]);
 
+  const { isLoading, data } = useQuery({
+    queryKey: ["clients", page],
+    queryFn: () => getClients({ page }),
   });
   if (isLoading) return <LoadingSpinner />;
   if (!data) return <h1>error</h1>;
@@ -68,13 +85,22 @@ const ClientsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((user) => (
-              <ActivationRequestRowItem key={user.id} user={user} />
+            {data.results.map((user) => (
+              <ActivationRequestRowItem key={user.id} page={page} user={user} />
             ))}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter className="">
+        <Paginator
+          page={page}
+          increasePage={increasePage}
+          decreasePage={decreasePage}
+          goToPage={goToPage}
+          hasNext={data.next != null}
+          hasPrev={data.previous != null}
+          totalPages={Math.floor(data.count / 5)}
+        />
         <div className="text-xs text-muted-foreground">
           Showing <strong>1-10</strong> of <strong>32</strong> products
         </div>
@@ -83,7 +109,13 @@ const ClientsPage = () => {
   );
 };
 
-const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
+const ActivationRequestRowItem = ({
+  user,
+  page,
+}: {
+  user: IUser;
+  page: number;
+}) => {
   const created_at = new Date(user.created_at).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
@@ -129,8 +161,8 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <ClientActivationAction user={user} />
-            <ClientDeletionAction user={user} />
+            <ClientActivationAction user={user} page={page} />
+            <ClientDeletionAction user={user} page={page} />
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
@@ -138,41 +170,48 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
   );
 };
 
-const ClientDeletionAction = ({ user }: { user: IUser }) => {
+const ClientDeletionAction = ({
+  user,
+  page,
+}: {
+  user: IUser;
+  page: number;
+}) => {
   const deleteUserMutation = useMutation({
     mutationFn: deleteClientMutation,
     onMutate: async (id) => {
       await queryClient.cancelQueries({
-        queryKey: ["clients"],
+        queryKey: ["clients", page],
       });
-      const previousRequests = queryClient.getQueryData<IUser[]>([
+      const previousRequests = queryClient.getQueryData<IListResponse<IUser>>([
         "clients",
+        page,
       ]);
       queryClient.setQueryData(
-        ["clients"],
-        (old: IUser[]) => {
-          console.log(old);
-          return old.filter((item) => item.id !== id);
+        ["clients", page],
+        (old: IListResponse<IUser>) => {
+          return {
+            ...old,
+            results: old.results.filter((item) => item.id !== id),
+          };
         }
       );
       return { previousRequests };
     },
     onError: (err, data, context) => {
-      queryClient.setQueryData(
-        ["clients"],
-        context?.previousRequests
-      );
+      toast({ variant: "destructive", title: "unable to delete the user" });
+      queryClient.setQueryData(["clients", page], context?.previousRequests);
     },
   });
 
   const handleUserDeletion = () => {
-    deleteUserMutation.mutate(user.id,{
-      onSuccess:()=>{
+    deleteUserMutation.mutate(user.id, {
+      onSuccess: () => {
         toast({
           variant: "success",
           title: `User deleted successfully`,
         });
-      }
+      },
     });
   };
 
@@ -185,7 +224,13 @@ const ClientDeletionAction = ({ user }: { user: IUser }) => {
     </DropdownMenuItem>
   );
 };
-const ClientActivationAction = ({ user }: { user: IUser }) => {
+const ClientActivationAction = ({
+  user,
+  page,
+}: {
+  user: IUser;
+  page: number;
+}) => {
   const activeUserMutton = useMutation({
     mutationFn: toggleClientActivationState,
     onSuccess: (data) => {
@@ -196,23 +241,30 @@ const ClientActivationAction = ({ user }: { user: IUser }) => {
     },
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({
-        queryKey: ["clients"],
+        queryKey: ["clients", page],
       });
       const previousActivationRequests = queryClient.getQueryData<IUser[]>([
         "clients",
+        page,
       ]);
-      queryClient.setQueryData(["clients"], (old: IUser[]) => {
-        return old.map((item) => {
-          if (item.id == id) return { ...item, is_active: !item.is_active };
-          return item;
-        });
-      });
+      queryClient.setQueryData(
+        ["clients", page],
+        (old: IListResponse<IUser>) => {
+          return {
+            ...old,
+            results: old.results.map((item) => {
+              if (item.id == id) return { ...item, is_active: !item.is_active };
+              return item;
+            }),
+          };
+        }
+      );
       return { previousActivationRequests };
     },
     onError: (err, data, context) => {
       console.log(err, data);
       queryClient.setQueryData(
-        ["clients"],
+        ["clients", page],
         context?.previousActivationRequests
       );
     },

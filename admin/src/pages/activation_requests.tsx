@@ -4,7 +4,7 @@ import {
 } from "@/services/sellers.services";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { MoreHorizontal, User } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -38,6 +38,9 @@ import { deleteClientMutation } from "@/services/clients.services";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Paginator from "@/components/layout/paginator";
+import IListResponse from "@/interfaces/IListResponse";
+import { toast } from "@/components/ui/use-toast";
+import { title } from "process";
 
 const ActivationRequestsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -85,7 +88,7 @@ const ActivationRequestsPage = () => {
           </TableHeader>
           <TableBody>
             {data.results.map((user) => (
-              <ActivationRequestRowItem key={user.id} user={user} />
+              <ActivationRequestRowItem key={user.id} page={page} user={user} />
             ))}
           </TableBody>
         </Table>
@@ -108,8 +111,13 @@ const ActivationRequestsPage = () => {
   );
 };
 
-
-const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
+const ActivationRequestRowItem = ({
+  user,
+  page,
+}: {
+  user: IUser;
+  page: number;
+}) => {
   const created_at = new Date(user.created_at).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
@@ -155,8 +163,8 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <UserActivationAction user={user} />
-            <UserDeletionAction user={user} />
+            <UserActivationAction user={user} page={page} />
+            <UserDeletionAction user={user} page={page} />
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
@@ -166,38 +174,42 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
 
 export default ActivationRequestsPage;
 
-const UserDeletionAction = ({ user }: { user: IUser }) => {
+const UserDeletionAction = ({ user, page }: { user: IUser; page: number }) => {
   const deleteUserMutation = useMutation({
     mutationFn: deleteClientMutation,
     onMutate: async (id) => {
-      console.log("mutate");
-      console.log(id);
       await queryClient.cancelQueries({
-        queryKey: ["sellers-activation-requests"],
+        queryKey: ["sellers-activation-requests", page],
       });
       const previousRequests = queryClient.getQueryData<IUser[]>([
         "sellers-activation-requests",
       ]);
       queryClient.setQueryData(
-        ["sellers-activation-requests"],
+        ["sellers-activation-requests", page],
         (old: IUser[]) => {
-          console.log(old);
           return old.filter((item) => item.id !== id);
         }
       );
       return { previousRequests };
     },
     onError: (err, data, context) => {
-      console.log(err, data);
+      toast({ title: "unable to delete the user" });
       queryClient.setQueryData(
-        ["sellers-activation-requests"],
+        ["sellers-activation-requests", page],
         context?.previousRequests
       );
     },
   });
 
   const handleUserDeletion = () => {
-    deleteUserMutation.mutate(user.id);
+    deleteUserMutation.mutate(user.id, {
+      onSuccess: () => {
+        toast({
+          variant: "success",
+          title: `User deleted successfully`,
+        });
+      },
+    });
   };
 
   return (
@@ -210,41 +222,63 @@ const UserDeletionAction = ({ user }: { user: IUser }) => {
   );
 };
 
-const UserActivationAction = ({ user }: { user: IUser }) => {
+const UserActivationAction = ({
+  user,
+  page,
+}: {
+  user: IUser;
+  page: number;
+}) => {
   const activeUserMutton = useMutation({
     mutationFn: approveSellerActivationRequest,
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({
-        queryKey: ["sellers-activation-requests"],
+        queryKey: ["sellers-activation-requests", page],
       });
+      console.log("hello world");
       const previousActivationRequests = queryClient.getQueryData<IUser[]>([
         "sellers-activation-requests",
+        page,
       ]);
       queryClient.setQueryData(
-        ["sellers-activation-requests"],
-        (old: IUser[]) => {
-          return old.map((item) => {
-            if (item.id == id) return { ...item, is_active: !item.is_active };
-            return item;
-          });
+        ["sellers-activation-requests", page],
+        (old: IListResponse<IUser>) => {
+          return {
+            ...old,
+            results: old.results.map((item) => {
+              if (item.id == id) return { ...item, is_active: !item.is_active };
+              return item;
+            }),
+          };
         }
       );
       return { previousActivationRequests };
     },
     onError: (err, data, context) => {
       console.log(err, data);
+      toast({ variant:"destructive",title: "unable to activate the user" });
       queryClient.setQueryData(
-        ["sellers-activation-requests"],
+        ["sellers-activation-requests", page],
         context?.previousActivationRequests
       );
     },
   });
 
   const handleUserActivation = () => {
-    activeUserMutton.mutate({
-      id: user.id,
-      is_active: !user.is_active,
-    });
+    activeUserMutton.mutate(
+      {
+        id: user.id,
+        is_active: !user.is_active,
+      },
+      {
+        onSuccess: (data) => {
+          toast({
+            variant: "success",
+            title: `User ${data.is_active ? "activated" : "deactivated"}`,
+          });
+        },
+      }
+    );
   };
   return (
     <DropdownMenuItem onClick={handleUserActivation} className="cursor-pointer">

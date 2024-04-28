@@ -1,3 +1,4 @@
+import IListResponse from "@/interfaces/IListResponse";
 import IUser from "@/interfaces/IUser";
 import { axiosClient } from "@/lib/axios";
 import {
@@ -5,10 +6,10 @@ import {
   clientsListEndpoint,
 } from "@/utils/api_endpoints";
 
-export const getClients = async ()=> {
+export const getClients = async ({ page }: { page: number }) => {
   let pathWithQueries = clientsListEndpoint;
   if (page) pathWithQueries += `?page=${page}`;
-  const response = await axiosClient.get<IUser[]>(pathWithQueries);
+  const response = await axiosClient.get<IListResponse<IUser>>(pathWithQueries);
   return response.data;
 };
 export const deleteClient = async (id: string) => {
