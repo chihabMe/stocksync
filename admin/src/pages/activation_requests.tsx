@@ -40,8 +40,9 @@ import { useEffect, useState } from "react";
 import Paginator from "@/components/layout/paginator";
 import IListResponse from "@/interfaces/IListResponse";
 import { toast } from "@/components/ui/use-toast";
-import { title } from "process";
+import { Skeleton } from "@/components/ui/skeleton";
 
+const sellersQueryKey = "sellers-activation-requests";
 const ActivationRequestsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const p = parseInt(searchParams.get("page") as unknown as string) || 1;
@@ -57,10 +58,9 @@ const ActivationRequestsPage = () => {
     setSearchParams({ page: page.toString() });
   }, [page]);
   const { isLoading, data } = useQuery({
-    queryKey: ["sellers-activation-requests", page],
+    queryKey: [sellersQueryKey, page],
     queryFn: () => getSellersActivationRequests({ page }),
   });
-  if (isLoading) return <LoadingSpinner />;
   if (!data) return <h1>error</h1>;
 
   return (
@@ -87,9 +87,16 @@ const ActivationRequestsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.results.map((user) => (
-              <ActivationRequestRowItem key={user.id} page={page} user={user} />
-            ))}
+            {true && <ActivationRequestRowSkelton />}
+            {!isLoading &&
+              data &&
+              data.results.map((user) => (
+                <ActivationRequestRowItem
+                  key={user.id}
+                  page={page}
+                  user={user}
+                />
+              ))}
           </TableBody>
         </Table>
       </CardContent>
@@ -111,6 +118,30 @@ const ActivationRequestsPage = () => {
   );
 };
 
+const ActivationRequestRowSkelton = () => {
+  return (
+    <TableRow>
+      <TableCell className="hidden sm:table-cell">
+        <Skeleton className="h-12 w-12 rounded-full" />
+      </TableCell>
+      <TableCell className="font-medium">
+        <Skeleton className="h-4 w-[250px]" />
+      </TableCell>
+      <TableCell className="hidden md:table-cell"></TableCell>
+      <TableCell>
+        <Skeleton className="h-4 w-[250px]" />
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
+        <Skeleton className="h-4 w-[250px]" />
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-12 w-12 rounded-full" />
+      </TableCell>
+      <TableCell></TableCell>
+    </TableRow>
+  );
+};
 const ActivationRequestRowItem = ({
   user,
   page,
@@ -179,23 +210,20 @@ const UserDeletionAction = ({ user, page }: { user: IUser; page: number }) => {
     mutationFn: deleteClientMutation,
     onMutate: async (id) => {
       await queryClient.cancelQueries({
-        queryKey: ["sellers-activation-requests", page],
+        queryKey: [sellersQueryKey, page],
       });
       const previousRequests = queryClient.getQueryData<IUser[]>([
-        "sellers-activation-requests",
+        sellersQueryKey,
       ]);
-      queryClient.setQueryData(
-        ["sellers-activation-requests", page],
-        (old: IUser[]) => {
-          return old.filter((item) => item.id !== id);
-        }
-      );
+      queryClient.setQueryData([sellersQueryKey, page], (old: IUser[]) => {
+        return old.filter((item) => item.id !== id);
+      });
       return { previousRequests };
     },
     onError: (err, data, context) => {
       toast({ title: "unable to delete the user" });
       queryClient.setQueryData(
-        ["sellers-activation-requests", page],
+        [sellersQueryKey, page],
         context?.previousRequests
       );
     },
@@ -233,15 +261,15 @@ const UserActivationAction = ({
     mutationFn: approveSellerActivationRequest,
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries({
-        queryKey: ["sellers-activation-requests", page],
+        queryKey: [sellersQueryKey, page],
       });
       console.log("hello world");
       const previousActivationRequests = queryClient.getQueryData<IUser[]>([
-        "sellers-activation-requests",
+        sellersQueryKey,
         page,
       ]);
       queryClient.setQueryData(
-        ["sellers-activation-requests", page],
+        [sellersQueryKey, page],
         (old: IListResponse<IUser>) => {
           return {
             ...old,
@@ -256,9 +284,9 @@ const UserActivationAction = ({
     },
     onError: (err, data, context) => {
       console.log(err, data);
-      toast({ variant:"destructive",title: "unable to activate the user" });
+      toast({ variant: "destructive", title: "unable to activate the user" });
       queryClient.setQueryData(
-        ["sellers-activation-requests", page],
+        [sellersQueryKey, page],
         context?.previousActivationRequests
       );
     },
