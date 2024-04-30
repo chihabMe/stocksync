@@ -40,7 +40,7 @@ import { useEffect, useState } from "react";
 import Paginator from "@/components/layout/paginator";
 import IListResponse from "@/interfaces/IListResponse";
 import { toast } from "@/components/ui/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
+import ListSkelton from "@/components/layout/list.skelton";
 
 const sellersQueryKey = "sellers-activation-requests";
 const ActivationRequestsPage = () => {
@@ -57,11 +57,11 @@ const ActivationRequestsPage = () => {
   useEffect(() => {
     setSearchParams({ page: page.toString() });
   }, [page]);
-  const { isLoading, data } = useQuery({
+  const { isLoading, isError, data } = useQuery({
     queryKey: [sellersQueryKey, page],
     queryFn: () => getSellersActivationRequests({ page }),
   });
-  if (!data) return <h1>error</h1>;
+  if (isError) return <h1>error</h1>;
 
   return (
     <Card className="">
@@ -87,7 +87,7 @@ const ActivationRequestsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {true && <ActivationRequestRowSkelton />}
+            {isLoading && <ListSkelton />}
             {!isLoading &&
               data &&
               data.results.map((user) => (
@@ -100,48 +100,29 @@ const ActivationRequestsPage = () => {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter className="">
-        <Paginator
-          page={page}
-          increasePage={increasePage}
-          decreasePage={decreasePage}
-          goToPage={goToPage}
-          hasNext={data.next != null}
-          hasPrev={data.previous != null}
-          totalPages={Math.floor(data.count / 5)}
-        />
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>5</strong> of <strong>{data.count}</strong> requests
-        </div>
-      </CardFooter>
+      {data && (
+        <>
+          <CardFooter className="">
+            <Paginator
+              page={page}
+              increasePage={increasePage}
+              decreasePage={decreasePage}
+              goToPage={goToPage}
+              hasNext={data.next != null}
+              hasPrev={data.previous != null}
+              totalPages={Math.floor(data.count / 5)}
+            />
+            <div className="text-xs text-muted-foreground">
+              Showing <strong>5</strong> of <strong>{data.count}</strong>{" "}
+              requests
+            </div>
+          </CardFooter>
+        </>
+      )}
     </Card>
   );
 };
 
-const ActivationRequestRowSkelton = () => {
-  return (
-    <TableRow>
-      <TableCell className="hidden sm:table-cell">
-        <Skeleton className="h-12 w-12 rounded-full" />
-      </TableCell>
-      <TableCell className="font-medium">
-        <Skeleton className="h-4 w-[250px]" />
-      </TableCell>
-      <TableCell className="hidden md:table-cell"></TableCell>
-      <TableCell>
-        <Skeleton className="h-4 w-[250px]" />
-      </TableCell>
-      <TableCell className="hidden md:table-cell">
-        <Skeleton className="h-4 w-[250px]" />
-      </TableCell>
-      <TableCell className="hidden md:table-cell">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-12 w-12 rounded-full" />
-      </TableCell>
-      <TableCell></TableCell>
-    </TableRow>
-  );
-};
 const ActivationRequestRowItem = ({
   user,
   page,

@@ -40,6 +40,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import IListResponse from "@/interfaces/IListResponse";
 import Paginator from "@/components/layout/paginator";
+import ListSkelton from "@/components/layout/list.skelton";
 
 const ClientsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -60,8 +61,7 @@ const ClientsPage = () => {
     queryKey: ["clients", page],
     queryFn: () => getClients({ page }),
   });
-  if (isLoading) return <LoadingSpinner />;
-  if (!data) return <h1>error</h1>;
+  if (!isLoading && !data) return <h1>error</h1>;
 
   return (
     <Card className="">
@@ -85,25 +85,36 @@ const ClientsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.results.map((user) => (
-              <ActivationRequestRowItem key={user.id} page={page} user={user} />
-            ))}
+            {isLoading && <ListSkelton />}
+            {!isLoading &&
+              data &&
+              data.results.map((user) => (
+                <ActivationRequestRowItem
+                  key={user.id}
+                  page={page}
+                  user={user}
+                />
+              ))}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter className="">
-        <Paginator
-          page={page}
-          increasePage={increasePage}
-          decreasePage={decreasePage}
-          goToPage={goToPage}
-          hasNext={data.next != null}
-          hasPrev={data.previous != null}
-          totalPages={Math.floor(data.count / 5)}
-        />
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
-        </div>
+        {!isLoading && data && (
+          <>
+            <Paginator
+              page={page}
+              increasePage={increasePage}
+              decreasePage={decreasePage}
+              goToPage={goToPage}
+              hasNext={data.next != null}
+              hasPrev={data.previous != null}
+              totalPages={Math.floor(data.count / 5)}
+            />
+            <div className="text-xs text-muted-foreground">
+              Showing <strong>1-10</strong> of <strong>32</strong> products
+            </div>
+          </>
+        )}
       </CardFooter>
     </Card>
   );

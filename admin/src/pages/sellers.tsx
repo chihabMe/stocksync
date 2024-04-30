@@ -37,9 +37,9 @@ import { queryClient } from "@/main";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Paginator from "@/components/layout/paginator";
+import ListSkelton from "@/components/layout/list.skelton";
 
 const SellersPage = () => {
-
   const [searchParams, setSearchParams] = useSearchParams();
   const p = parseInt(searchParams.get("page") as unknown as string) || 1;
   const [page, setPage] = useState(p);
@@ -55,13 +55,11 @@ const SellersPage = () => {
     setSearchParams({ page: page.toString() });
   }, [page]);
 
-
-  const { isLoading,  data } = useQuery({
-    queryKey: ["sellers",page],
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ["sellers", page],
     queryFn: getSellers,
   });
-  if (isLoading) return <LoadingSpinner />;
-  if (!data) return <h1>error</h1>;
+  if (isError) return <h1>error</h1>;
 
   return (
     <Card className="">
@@ -73,9 +71,7 @@ const SellersPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="">
-                image
-              </TableHead>
+              <TableHead className="">image</TableHead>
               <TableHead>email</TableHead>
               <TableHead>name</TableHead>
               <TableHead className="hidden md:table-cell">status</TableHead>
@@ -87,25 +83,33 @@ const SellersPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.results.map((user) => (
-              <ActivationRequestRowItem key={user.id} user={user} />
-            ))}
+            {isLoading && <ListSkelton />}
+            {!isLoading &&
+              data &&
+              data.results.map((user) => (
+                <ActivationRequestRowItem key={user.id} user={user} />
+              ))}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter className="">
-        <Paginator
-          page={page}
-          increasePage={increasePage}
-          decreasePage={decreasePage}
-          goToPage={goToPage}
-          hasNext={data.next != null}
-          hasPrev={data.previous != null}
-          totalPages={Math.floor(data.count / 5)}
-        />
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>5</strong> of <strong>{data.count}</strong> products
-        </div>
+        {data && (
+          <>
+            <Paginator
+              page={page}
+              increasePage={increasePage}
+              decreasePage={decreasePage}
+              goToPage={goToPage}
+              hasNext={data.next != null}
+              hasPrev={data.previous != null}
+              totalPages={Math.floor(data.count / 5)}
+            />
+            <div className="text-xs text-muted-foreground">
+              Showing <strong>5</strong> of <strong>{data.count}</strong>{" "}
+              products
+            </div>
+          </>
+        )}
       </CardFooter>
     </Card>
   );
@@ -128,19 +132,16 @@ const ActivationRequestRowItem = ({ user }: { user: IUser }) => {
       const previousActivationRequests = queryClient.getQueryData<IUser[]>([
         "sellers",
       ]);
-      queryClient.setQueryData(
-        ["sellers"],
-        (old: IUser[]) => {
-          return old.map((item) => {
-            if (item.id == id) return { ...item, is_active: !item.is_active };
-            return item;
-          });
-        }
-      );
+      queryClient.setQueryData(["sellers"], (old: IUser[]) => {
+        return old.map((item) => {
+          if (item.id == id) return { ...item, is_active: !item.is_active };
+          return item;
+        });
+      });
       return { previousActivationRequests };
     },
-    onError: (err,data, context) => {
-      console.log(err,data)
+    onError: (err, data, context) => {
+      console.log(err, data);
       queryClient.setQueryData(
         ["sellers"],
         context?.previousActivationRequests
