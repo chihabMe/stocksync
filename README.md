@@ -25,7 +25,8 @@ The E-Commerce Mobile Application aims to address the challenges faced by users 
 
 - **Flutter:** Framework for building cross-platform mobile applications.
 - **Dart:** Programming language used with Flutter.
-- **GORM:** Go language Object-Relational Mapping (ORM) for database operations.
+- **Django:** Django backend Framework
+- **ReactJs:**  react frontend framework
 - **MySQL:** Relational database management system used for storing application data.
 
 ## Getting Started
