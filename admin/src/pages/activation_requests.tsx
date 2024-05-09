@@ -202,6 +202,8 @@ const UserDeletionAction = ({ user, page }: { user: IUser; page: number }) => {
       return { previousRequests };
     },
     onError: (err, data, context) => {
+      console.log(data)
+      console.error(err)
       toast({ title: "unable to delete the user" });
       queryClient.setQueryData(
         [sellersQueryKey, page],

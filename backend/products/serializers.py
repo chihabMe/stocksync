@@ -27,7 +27,7 @@ class DetailedProductSerializer(BasicProductSerializer):
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCategory
-        fields = ['id', 'name',  'parent']
+        fields = ['id', 'name', "created_at", 'parent']
 
 class ProductCategoryManagerSerializer(ProductCategorySerializer):
     def create(self, validated_data):

@@ -210,6 +210,8 @@ const ClientDeletionAction = ({
       return { previousRequests };
     },
     onError: (err, data, context) => {
+      console.log(data)
+      console.error(err)
       toast({ variant: "destructive", title: "unable to delete the user" });
       queryClient.setQueryData(["clients", page], context?.previousRequests);
     },
