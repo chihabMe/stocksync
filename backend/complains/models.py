@@ -7,13 +7,13 @@ from clients.models import ClientProfile
 
 class Complain(BaseModel):
     class ComplainStatusChoices(models.TextChoices):
-        PENDING = "Pn","Pending"
-        RESOLVED = "RS","Resolved"
-        Closed = "Cl","Closed"
+        PENDING = "pending","pending"
+        RESOLVED = "resolved","resolved"
+        Closed = "closed","closed"
     product = models.ForeignKey(Product,related_name="complains",on_delete=models.CASCADE)
     client = models.ForeignKey(ClientProfile,related_name="complains",on_delete=models.CASCADE)
     description = models.TextField()
-    status = models.CharField(max_length=10,choices=ComplainStatusChoices.choices)
+    status = models.CharField(max_length=10,default=ComplainStatusChoices.PENDING,choices=ComplainStatusChoices.choices)
 
     def __str__(self):
         return  str(self.client)+":"+str(self.product)

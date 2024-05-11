@@ -12,3 +12,6 @@ export const clientsListEndpoint = "/api/v1/clients/"
 export const clientManagerEndpoint = "/api/v1/clients/manage/"
 
 export const productsCategoriesManagerEndpoint = "/api/v1/products/categories/manager/"
+
+export const complainsManagerEndpoint = "/api/v1/complains/manager/"
+export const complainManagerEndpoint = "/api/v1/complains/manager/"
