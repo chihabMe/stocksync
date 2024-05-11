@@ -33,13 +33,12 @@ import { useSearchParams } from "react-router-dom";
 import IListResponse from "@/interfaces/IListResponse";
 import Paginator from "@/components/layout/paginator";
 import ListSkelton from "@/components/layout/list.skelton";
-import {
-  deleteProductCategoryMutation,
-  getProductsCategories,
-} from "@/services/products.services";
-import IProductCategory from "@/interfaces/IProductCategory";
 import IComplain from "@/interfaces/IComplain";
-import { getComplains } from "@/services/complains.services";
+import {
+  deleteComplainMutation,
+  getComplains,
+} from "@/services/complains.services";
+import { ComplainModal } from "./components/ComplainModal";
 
 const queryKey = "complains";
 const ComplainsPage = () => {
@@ -85,7 +84,7 @@ const ComplainsPage = () => {
             {!isLoading &&
               data &&
               data.results.map((complain) => (
-                <ProductCategoryRow
+                <ComplainsRow
                   key={complain.id}
                   page={page}
                   complain={complain}
@@ -107,7 +106,7 @@ const ComplainsPage = () => {
               totalPages={Math.floor(data.count / 5)}
             />
             <div className="text-xs text-muted-foreground">
-              Showing <strong>1-10</strong> of <strong>32</strong> categories
+              Showing <strong>1-10</strong> of <strong>32</strong> complains
             </div>
           </>
         )}
@@ -116,7 +115,7 @@ const ComplainsPage = () => {
   );
 };
 
-const ProductCategoryRow = ({
+const ComplainsRow = ({
   complain,
   page,
 }: {
@@ -130,15 +129,19 @@ const ProductCategoryRow = ({
     hour: "numeric",
     minute: "numeric",
   });
+  const [open, setOpen] = useState(false);
+  const openModal = () => setOpen(true);
+  const closeModal = () => setOpen(false);
   return (
-    <TableRow>
-      <TableCell className="font-medium">{complain.client.user.username}</TableCell>
+    <TableRow onClick={openModal} className="cursor-pointer">
+      <ComplainModal open={open} complain={complain} />
+      <TableCell className="font-medium">
+        {complain.client.user.username}
+      </TableCell>
       <TableCell className="hidden md:table-cell">
         {complain.product.name ?? "None"}
       </TableCell>
-      <TableCell className="hidden md:table-cell">
-        {complain.status}
-      </TableCell>
+      <TableCell className="hidden md:table-cell">{complain.status}</TableCell>
       <TableCell className="hidden md:table-cell">{created_at}</TableCell>
       <TableCell>
         <DropdownMenu>
@@ -166,17 +169,17 @@ const ComplainDeletionAction = ({
   page: number;
 }) => {
   const deleteUserMutation = useMutation({
-    mutationFn: deleteProductCategoryMutation,
+    mutationFn: deleteComplainMutation,
     onMutate: async (id) => {
       await queryClient.cancelQueries({
         queryKey: [queryKey, page],
       });
       const previousRequests = queryClient.getQueryData<
-        IListResponse<IProductCategory>
+        IListResponse<IComplain>
       >([queryKey, page]);
       queryClient.setQueryData(
         [queryKey, page],
-        (old: IListResponse<IProductCategory>) => {
+        (old: IListResponse<IComplain>) => {
           return {
             ...old,
             results: old.results.filter((item) => item.id !== id),

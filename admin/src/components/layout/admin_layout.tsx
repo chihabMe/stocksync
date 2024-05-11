@@ -27,10 +27,6 @@ const links = [
         path: "/admin/complains",
         text: "complains",
     },
-    {
-        path: "/admin/products",
-        text: "products",
-    },
 ]
 const AdminLayout = () => {
     return (
