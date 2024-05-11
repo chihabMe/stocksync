@@ -13,6 +13,8 @@ class ClientProfile(BaseModel):
     user = models.ForeignKey(
         User, related_name="client_profile", on_delete=models.CASCADE
     )
+    def str(self)->str:
+        return str(self.user)
 
 
 @receiver(post_save, sender=User)
