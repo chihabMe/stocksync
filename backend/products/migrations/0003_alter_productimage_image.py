@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productimage',
             name='image',
-            field=models.ImageField(max_length=500, upload_to=products.models.prodcut_image_uploader),
+            field=models.ImageField(max_length=500, upload_to=products.models.product_image_uploader),
         ),
     ]

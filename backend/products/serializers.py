@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Product, ProductCategory, ProductImage
+from .models import Product, ProductCategory, ProductImage,ProductCoupon
+from django.utils import timezone
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,9 +26,20 @@ class DetailedProductSerializer(BasicProductSerializer):
         fields = BasicProductSerializer.Meta.fields + ['images','description','stock']
 
 class ProductCategorySerializer(serializers.ModelSerializer):
-    class Meta:
+
         model = ProductCategory
         fields = ['id', 'name', "created_at", 'parent']
+
+
+class ProductCouponManagerSerializer(serializers.ModelSerializer):
+    expired = serializers.SerializerMethodField("get_is_active")
+    class Meta:
+        model = ProductCoupon
+        fields = ["id","code","created_at",'expired','expiry_date']
+    def get_expired(self,obj):
+        now = timezone.now()
+        return  obj.expiry_date > now
+
 
 class ProductCategoryManagerSerializer(ProductCategorySerializer):
     def create(self, validated_data):

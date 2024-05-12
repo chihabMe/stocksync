@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('image', models.ImageField(upload_to=products.models.prodcut_image_uploader)),
+                ('image', models.ImageField(upload_to=products.models.product_image_uploader)),
                 ('caption', models.CharField(blank=True, max_length=255, null=True)),
                 ('is_feautred', models.BooleanField(default=False)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='products.product')),

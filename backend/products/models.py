@@ -2,6 +2,8 @@ from django.db import models
 import os
 from common.base_model import BaseModel
 from django.utils.text import slugify
+from sellers.models import SellerProfile
+from django.core.validators import MaxValueValidator,MinValueValidator
 
 # Create your models here.
 class ProductCategory(BaseModel):
@@ -29,7 +31,6 @@ class Product(BaseModel):
             return featured
         return self.image.first()
     def save(self, *args, **kwargs):
-        print('runnig')
         if not self.slug:
             self.slug = slugify(self.name)
             while Product.objects.filter(slug=self.slug).exists():
@@ -38,11 +39,17 @@ class Product(BaseModel):
 
     def __str__(self) -> str:
         return self.name
-def prodcut_image_uploader(instance, filename):
+class ProductCoupon(BaseModel):
+    code = models.CharField(max_length=49, unique=True)
+    discount = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(100)])
+    seller = models.ForeignKey(SellerProfile,related_name="generated_coupons",on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,related_name="coupons",on_delete=models.CASCADE)
+    expiry_date = models.DateTimeField()
+def product_image_uploader(instance, filename):
     return os.path.join("products", str(instance.product.id), filename)
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=prodcut_image_uploader,max_length=500)  
+    image = models.ImageField(upload_to=product_image_uploader,max_length=500)  
     caption = models.CharField(max_length=255, blank=True, null=True)
     is_featured = models.BooleanField(default=False)
     def __str__(self):
