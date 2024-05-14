@@ -6,53 +6,60 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import IComplain from "@/interfaces/IComplain";
-import { ReactNode } from "react";
 
 export function ComplainModal({
   complain,
   open,
-  colseModal,
+  setOpen,
 }: {
   complain: IComplain;
   open: boolean;
-  closeModal: () => void;
+  setOpen: (value:boolean) => void;
 }) {
   return (
-    <Dialog open={open} >
-      <DialogContent className="sm:max-w-[425px]" >
+    <Dialog open={open}  onOpenChange={setOpen}  >
+      <DialogContent className="sm:max-w-[425px] " >
         <DialogHeader >
-          <DialogTitle>{complain.client.user.username}</DialogTitle>
+          <DialogTitle>client : {complain.client.user.username}</DialogTitle>
           <DialogDescription>{complain.description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
+        <div className="grid gap-4 py-4   ">
+          <div className="flex gap-2">
+            <h2 className="">
+             Product name   
+            </h2>
+            <h2>
               {complain.product.name}
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
+            </h2>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
+
+          <div className="flex gap-2">
+            <h2 className="">
+              Price
+            </h2>
+            <p>
+              {complain.product.price}
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <h2 className="">
+              Client  email
+            </h2>
+            <p>
+              {complain.client.user.email}
+            </p>
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <div className="flex gap-2">
+          <Button variant="destructive" >close complain</Button>
+          <Button type="submit">return money </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

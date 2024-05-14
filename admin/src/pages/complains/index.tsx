@@ -134,7 +134,7 @@ const ComplainsRow = ({
   const closeModal = () => setOpen(false);
   return (
     <TableRow onClick={openModal} className="cursor-pointer">
-      <ComplainModal open={open} complain={complain} />
+      <ComplainModal setOpen={setOpen} open={open} complain={complain} />
       <TableCell className="font-medium">
         {complain.client.user.username}
       </TableCell>
