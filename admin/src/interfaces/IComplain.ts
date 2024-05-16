@@ -8,5 +8,7 @@ export default interface IComplain {
   description: string;
   created_at: string;
   updated_at: string;
-  status: "pending" | "resolved" | "closed";
+  status:IComplainStatus ;
 }
+
+export type IComplainStatus = "pending" | "resolved" | "closed";

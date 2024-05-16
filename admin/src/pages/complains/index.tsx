@@ -39,6 +39,7 @@ import {
   getComplains,
 } from "@/services/complains.services";
 import { ComplainModal } from "./components/ComplainModal";
+import { Badge } from "@/components/ui/badge";
 
 const queryKey = "complains";
 const ComplainsPage = () => {
@@ -131,17 +132,25 @@ const ComplainsRow = ({
   });
   const [open, setOpen] = useState(false);
   const openModal = () => setOpen(true);
-  const closeModal = () => setOpen(false);
   return (
     <TableRow onClick={openModal} className="cursor-pointer">
-      <ComplainModal setOpen={setOpen} open={open} complain={complain} />
+      <ComplainModal
+        page={page}
+        setOpen={setOpen}
+        open={open}
+        complain={complain}
+      />
       <TableCell className="font-medium">
         {complain.client.user.username}
       </TableCell>
       <TableCell className="hidden md:table-cell">
         {complain.product.name ?? "None"}
       </TableCell>
-      <TableCell className="hidden md:table-cell">{complain.status}</TableCell>
+      <TableCell className="hidden md:table-cell">
+        <Badge variant={complain.status == "closed" ? "success" : "default"}>
+          {complain.status}
+        </Badge>
+      </TableCell>
       <TableCell className="hidden md:table-cell">{created_at}</TableCell>
       <TableCell>
         <DropdownMenu>

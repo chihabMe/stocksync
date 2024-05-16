@@ -9,7 +9,7 @@ class Complain(BaseModel):
     class ComplainStatusChoices(models.TextChoices):
         PENDING = "pending","pending"
         RESOLVED = "resolved","resolved"
-        Closed = "closed","closed"
+        CLOSED = "closed","closed"
     product = models.ForeignKey(Product,related_name="complains",on_delete=models.CASCADE)
     client = models.ForeignKey(ClientProfile,related_name="complains",on_delete=models.CASCADE)
     description = models.TextField()

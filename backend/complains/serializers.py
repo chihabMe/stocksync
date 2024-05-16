@@ -21,6 +21,12 @@ class ComplainSerializer(serializers.ModelSerializer):
         return instance
 
 class ComplainManagerSerializer(ComplainSerializer):
+    description = serializers.CharField(required=False)  
+
+    def validate_status(self,value):
+        if value not in [Complain.ComplainStatusChoices.CLOSED,Complain.ComplainStatusChoices.PENDING,Complain.ComplainStatusChoices.RESOLVED]:
+            return serializers.ValidationError("invalid complain status")
+        return value
 
     def update(self, instance, validated_data):
         instance.status = validated_data.get('status', instance.status)

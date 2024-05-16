@@ -1,7 +1,10 @@
-import IComplain from "@/interfaces/IComplain";
+import IComplain, { IComplainStatus } from "@/interfaces/IComplain";
 import IListResponse from "@/interfaces/IListResponse";
 import { axiosClient } from "@/lib/axios";
-import { complainManagerEndpoint, complainsManagerEndpoint } from "@/utils/api_endpoints";
+import {
+  complainManagerEndpoint,
+  complainsManagerEndpoint,
+} from "@/utils/api_endpoints";
 
 export const getComplains = async ({ page }: { page: number }) => {
   let pathWithQueries = complainManagerEndpoint;
@@ -16,3 +19,14 @@ export const deleteComplainMutation = async (id: string) => {
   return await axiosClient.delete(`${complainsManagerEndpoint}${id}/`);
 };
 
+export const updateComplainStatusService = async ({
+  id,
+  status,
+}: {
+  id: string;
+  status: IComplainStatus;
+}) => {
+  return await axiosClient.put(`${complainsManagerEndpoint}${id}/`, {
+    status,
+  });
+};
