@@ -75,7 +75,6 @@ export function ComplainModal({
             <h2 className="">Product name</h2>
             <h2>{complain.product.name}</h2>
           </div>
-
           <div className="flex gap-2">
             <h2 className="">Price</h2>
             <p>{complain.product.price}</p>

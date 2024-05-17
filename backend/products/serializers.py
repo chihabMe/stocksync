@@ -45,7 +45,7 @@ class ProductCouponManagerSerializer(serializers.ModelSerializer):
 class ProductCategoryManagerSerializer(ProductCategorySerializer):
     def create(self, validated_data):
         category  = ProductCategory.objects.create(**validated_data)
-        category.sve()
+        category.save()
         return category
     
     def update(self, instance, validated_data):

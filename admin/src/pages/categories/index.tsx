@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,12 +33,18 @@ import { useSearchParams } from "react-router-dom";
 import IListResponse from "@/interfaces/IListResponse";
 import Paginator from "@/components/layout/paginator";
 import ListSkelton from "@/components/layout/list.skelton";
-import { deleteProductCategoryMutation, getProductsCategories } from "@/services/products.services";
+import {
+  deleteProductCategoryMutation,
+  getProductsCategories,
+} from "@/services/products.services";
 import IProductCategory from "@/interfaces/IProductCategory";
+import { AddCategoryModal } from "./components/AddCategoryModal";
 
 const queryKey = "categories";
 const CategoryPage = () => {
+  const [openAddCategoryModal, setOpenAddCategoryModal] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+
   const p = parseInt(searchParams.get("page") as unknown as string) || 1;
   const [page, setPage] = useState(p);
   const increasePage = () => setPage((prev) => prev + 1);
@@ -60,9 +66,16 @@ const CategoryPage = () => {
 
   return (
     <Card className="">
-      <CardHeader>
+      <CardHeader className="flex flex-row justify-between">
         <CardTitle>Categories</CardTitle>
-        <CardDescription>list of all categories</CardDescription>
+        <AddCategoryModal
+          open={openAddCategoryModal}
+          setOpen={setOpenAddCategoryModal}
+          page={page}
+        />
+        <Button onClick={() => setOpenAddCategoryModal(true)}>
+          <PlusIcon className="w-5 h-5" />
+        </Button>
       </CardHeader>
       <CardContent className="min-h-[65vh]">
         <Table>

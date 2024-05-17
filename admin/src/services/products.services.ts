@@ -1,5 +1,7 @@
 import IListResponse from "@/interfaces/IListResponse";
-import IProductCategory from "@/interfaces/IProductCategory";
+import IProductCategory, {
+  NewProductCategoryData,
+} from "@/interfaces/IProductCategory";
 import { axiosClient } from "@/lib/axios";
 import { productsCategoriesManagerEndpoint } from "@/utils/api_endpoints";
 
@@ -14,4 +16,10 @@ export const getProductsCategories = async ({ page }: { page: number }) => {
 
 export const deleteProductCategoryMutation = async (id: string) => {
   return await axiosClient.delete(`${productsCategoriesManagerEndpoint}${id}/`);
+};
+
+export const addCategoryMutationService = async (
+  data: NewProductCategoryData
+) => {
+  return await axiosClient.post(`${productsCategoriesManagerEndpoint}`, data);
 };
