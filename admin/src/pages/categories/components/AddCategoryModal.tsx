@@ -30,31 +30,8 @@ export function AddCategoryModal({
   };
   const addCategoryMutation = useMutation({
     mutationFn: addCategoryMutationService,
-    // onMutate: async (data) => {
-    //   await queryClient.cancelQueries({
-    //     queryKey: [queryKey, page],
-    //   });
-    //   const previousRequests = queryClient.getQueryData<
-    //     IListResponse<IProductCategory>
-    //   >([queryKey, page]);
-    //   queryClient.setQueryData(
-    //     [queryKey, page],
-    //     (old: IListResponse<IComplain>) => {
-    //       return {
-    //         ...old,
-    //         results: [
-    //           ...old.results,
-    //           { id: Math.random().toString(), name: data.name },
-    //         ],
-    //       };
-    //     }
-    //   );
-    //   return { previousRequests };
-    // },
     onError: (err, _, context) => {
-      console.error(err);
       toast({ variant: "destructive", title: "unable to add category" });
-      //   queryClient.setQueryData([queryKey, page], context?.previousRequests);
     },
     onSuccess: () => {
       toast({ variant: "success", title: "added new category" });
@@ -64,7 +41,6 @@ export function AddCategoryModal({
   });
   const handleAddCategorySubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("click");
     addCategoryMutation.mutate(form);
   };
   return (

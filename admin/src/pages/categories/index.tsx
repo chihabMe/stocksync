@@ -199,6 +199,9 @@ const CategoryDeletionAction = ({
       toast({ variant: "destructive", title: "unable to delete the category" });
       queryClient.setQueryData([queryKey, page], context?.previousRequests);
     },
+    onSuccess: () => {
+      toast({ variant: "success", title: "deleted a category" });
+    },
   });
 
   const handleUserDeletion = () => {
