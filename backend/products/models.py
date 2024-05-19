@@ -4,6 +4,9 @@ from common.base_model import BaseModel
 from django.utils.text import slugify
 from sellers.models import SellerProfile
 from django.core.validators import MaxValueValidator,MinValueValidator
+from io import BytesIO
+from PIL import Image
+from django.core.files.base import ContentFile
 
 # Create your models here.
 class ProductCategory(BaseModel):
@@ -52,5 +55,12 @@ class ProductImage(BaseModel):
     image = models.ImageField(upload_to=product_image_uploader,max_length=500)  
     caption = models.CharField(max_length=255, blank=True, null=True)
     is_featured = models.BooleanField(default=False)
+    def save(self,*args,**kwargs):
+        super().save(*args,**kwargs)
+        imag = Image.open(self.image.path)
+        if imag.width > 650 or imag.height> 450:
+            output_size = (650, 450)
+            imag.thumbnail(output_size)
+            imag.save(self.image.path)
     def __str__(self):
         return f"{self.product.name} - {self.caption if self.caption else 'Image'}"

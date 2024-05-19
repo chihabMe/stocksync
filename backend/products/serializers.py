@@ -1,29 +1,32 @@
 from rest_framework import serializers
+import random
 from .models import Product, ProductCategory, ProductImage,ProductCoupon
 from django.utils import timezone
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ['id', 'image']
+        fields = ["id",'image']
 
 class ProductCategorySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ProductCategory
         fields = ['id', 'name', 'slug', 'parent']
+class ProductSerializer(serializers.ModelSerializer):
+    is_liked = serializers.SerializerMethodField('get_is_liked')
+    rating = serializers.SerializerMethodField('get_rating')
+    images = ProductImageSerializer(read_only=True, many=True)
 
-class BasicProductSerializer(serializers.ModelSerializer):
     category = ProductCategorySerializer(read_only=True)
-    
     class Meta:
         model = Product
-        fields = ['id', 'name', 'slug', 'price', 'category',]
+        fields = ['id', 'name','is_liked','rating','images', 'slug', 'price', 'category','description','stock']
+    def get_is_liked(self,obj):
+        return random.choice([True,False])
 
-class DetailedProductSerializer(BasicProductSerializer):
-    images = ProductImageSerializer(many=True, read_only=True)
-    
-    class Meta(BasicProductSerializer.Meta):
-        fields = BasicProductSerializer.Meta.fields + ['images','description','stock']
+    def get_rating(self,obj):
+        return random.choice([1,2,3,4,5])
 
 class ProductCategorySerializer(serializers.ModelSerializer):
 
@@ -33,6 +36,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductCouponManagerSerializer(serializers.ModelSerializer):
+
     expired = serializers.SerializerMethodField("get_is_active")
     class Meta:
         model = ProductCoupon
@@ -43,6 +47,7 @@ class ProductCouponManagerSerializer(serializers.ModelSerializer):
 
 
 class ProductCategoryManagerSerializer(ProductCategorySerializer):
+
     def create(self, validated_data):
         category  = ProductCategory.objects.create(**validated_data)
         category.save()

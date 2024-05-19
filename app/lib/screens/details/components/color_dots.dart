@@ -21,9 +21,9 @@ class ColorDots extends StatelessWidget {
       child: Row(
         children: [
           ...List.generate(
-            product.colors.length,
+            0,
             (index) => ColorDot(
-              color: product.colors[index],
+              color: Colors.transparent,
               isSelected: index == selectedColor,
             ),
           ),

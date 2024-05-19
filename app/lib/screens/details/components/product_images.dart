@@ -25,26 +25,28 @@ class _ProductImagesState extends State<ProductImages> {
           width: 238,
           child: AspectRatio(
             aspectRatio: 1,
-            child: Image.asset(widget.product.images[selectedImage]),
+            child: Image.network(widget.product.images[selectedImage].image),
           ),
         ),
         // SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ...List.generate(
-              widget.product.images.length,
-              (index) => SmallProductImage(
-                isSelected: index == selectedImage,
-                press: () {
-                  setState(() {
-                    selectedImage = index;
-                  });
-                },
-                image: widget.product.images[index],
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...List.generate(
+                widget.product.images.length,
+                (index) => SmallProductImage(
+                    isSelected: index == selectedImage,
+                    press: () {
+                      setState(() {
+                        selectedImage = index;
+                      });
+                    },
+                    image: widget.product.images[index].image),
               ),
-            ),
-          ],
+            ],
+          ),
         )
       ],
     );
@@ -83,7 +85,7 @@ class _SmallProductImageState extends State<SmallProductImage> {
           border: Border.all(
               color: kPrimaryColor.withOpacity(widget.isSelected ? 1 : 0)),
         ),
-        child: Image.asset(widget.image),
+        child: Image.network(widget.image),
       ),
     );
   }

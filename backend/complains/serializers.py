@@ -1,12 +1,12 @@
 
 from rest_framework import serializers
 from .models import Complain
-from products.serializers import DetailedProductSerializer
+from products.serializers import ProductSerializer
 from clients.serializers import ClientSerialize
 
 
 class ComplainSerializer(serializers.ModelSerializer):
-    product = DetailedProductSerializer(read_only=True)
+    product = ProductSerializer(read_only=True)
     client = ClientSerialize(read_only=True)
     class Meta:
         model = Complain
