@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop_app/models/User.dart';
 
 class ProfilePic extends StatelessWidget {
+  final User user;
   const ProfilePic({
-    Key? key,
-  }) : super(key: key);
+      required this.user,
+  }) 
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class ProfilePic extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           const CircleAvatar(
-            backgroundImage: AssetImage("assets/images/Profile Image.png"),
+            backgroundImage: NetworkImage(user.image),
           ),
           Positioned(
             right: -16,
@@ -26,7 +28,8 @@ class ProfilePic extends StatelessWidget {
               width: 46,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.white, shape: RoundedRectangleBorder(
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                     side: const BorderSide(color: Colors.white),
                   ),
