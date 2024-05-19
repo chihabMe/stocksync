@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/screens/init_screen.dart';
+import 'package:shop_app/services/auth_servies.dart';
 
 import '../../../components/custom_surfix_icon.dart';
 import '../../../components/form_error.dart';
@@ -17,10 +18,12 @@ class SignForm extends StatefulWidget {
 
 class _SignFormState extends State<SignForm> {
   final _formKey = GlobalKey<FormState>();
-  String? email;
-  String? password;
+  String email = "";
+  String password = "";
   bool? remember = false;
   final List<String?> errors = [];
+  AuthServices authServices = AuthServices();
+  bool isLoading = false;
 
   void addError({String? error}) {
     if (!errors.contains(error)) {
@@ -38,6 +41,31 @@ class _SignFormState extends State<SignForm> {
     }
   }
 
+  Future<void> handleLogin() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      setState(() {
+        isLoading = true;
+      });
+      KeyboardUtil.hideKeyboard(context);
+
+      try {
+        bool success = await authServices.login(email, password);
+        if (success) {
+          Navigator.pushNamed(context, InitScreen.routeName);
+        } else {
+          addError(error: "Login failed. Please check your credentials.");
+        }
+      } catch (e) {
+        addError(error: "An error occurred. Please try again.");
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -46,7 +74,7 @@ class _SignFormState extends State<SignForm> {
         children: [
           TextFormField(
             keyboardType: TextInputType.emailAddress,
-            onSaved: (newValue) => email = newValue,
+            onSaved: (newValue) => email = newValue!,
             onChanged: (value) {
               if (value.isNotEmpty) {
                 removeError(error: kEmailNullError);
@@ -68,8 +96,6 @@ class _SignFormState extends State<SignForm> {
             decoration: const InputDecoration(
               labelText: "Email",
               hintText: "Enter your email",
-              // If  you are using latest version of flutter then lable text and hint text shown like this
-              // if you r using flutter less then 1.20.* then maybe this is not working properly
               floatingLabelBehavior: FloatingLabelBehavior.always,
               suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
             ),
@@ -77,7 +103,7 @@ class _SignFormState extends State<SignForm> {
           const SizedBox(height: 20),
           TextFormField(
             obscureText: true,
-            onSaved: (newValue) => password = newValue,
+            onSaved: (newValue) => password = newValue!,
             onChanged: (value) {
               if (value.isNotEmpty) {
                 removeError(error: kPassNullError);
@@ -99,8 +125,6 @@ class _SignFormState extends State<SignForm> {
             decoration: const InputDecoration(
               labelText: "Password",
               hintText: "Enter your password",
-              // If  you are using latest version of flutter then lable text and hint text shown like this
-              // if you r using flutter less then 1.20.* then maybe this is not working properly
               floatingLabelBehavior: FloatingLabelBehavior.always,
               suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
             ),
@@ -131,17 +155,12 @@ class _SignFormState extends State<SignForm> {
           ),
           FormError(errors: errors),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                // if all are valid then go to success screen
-                KeyboardUtil.hideKeyboard(context);
-                Navigator.pushNamed(context, InitScreen.routeName);
-              }
-            },
-            child: const Text("Continue"),
-          ),
+          isLoading
+              ? CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: handleLogin,
+                  child: const Text("Continue"),
+                ),
         ],
       ),
     );

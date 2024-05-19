@@ -25,11 +25,7 @@ class _InitScreenState extends State<InitScreen> {
     });
   }
 
-  final pages = [
-    const HomeScreen(),
-    const FavoriteScreen(),
-    const ProfileScreen()
-  ];
+  final pages = [const HomeScreen(), const FavoriteScreen(), ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {

@@ -4,16 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:shop_app/endpoints.dart';
 
 import 'package:shop_app/models/Product.dart';
-import 'package:shop_app/models/ListResponse.dart'; // Import the ListResponse model
+import 'package:shop_app/models/ListResponse.dart';
+import 'package:shop_app/screens/utils/dio_client.dart'; // Import the ListResponse model
 
 class ProductService {
-  final Dio dio = Dio();
+  final Dio dio = DioClient().dio;
 
   Future<List<Product>> getNewProducts() async {
     try {
       final response = await dio.get("$productEndpoint?order_by=new");
-      if (response.statusCode == 200) {}
-
       ListResponse<Product> listResponse =
           ListResponse.fromJson(response.data, Product.fromJson);
       List<Product> products = listResponse.results;
