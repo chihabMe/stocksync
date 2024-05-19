@@ -45,7 +45,11 @@ class ProfileScreen extends StatelessWidget {
               icon: "assets/icons/Log out.svg",
               press: () {
                 authServices.logout();
-                Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  SignInScreen.routeName,
+                  (Route<dynamic> route) => false,
+                );
               },
             ),
           ],
