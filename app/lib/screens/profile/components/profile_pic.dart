@@ -4,9 +4,12 @@ import 'package:shop_app/models/User.dart';
 
 class ProfilePic extends StatelessWidget {
   final User user;
-  const ProfilePic({
-      required this.user,
-  }) 
+
+  // Constructor should not be constant if it has a body or uses non-constant values
+  ProfilePic({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,8 @@ class ProfilePic extends StatelessWidget {
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          const CircleAvatar(
+          // Remove const from CircleAvatar as user.image is a non-constant value
+          CircleAvatar(
             backgroundImage: NetworkImage(user.image),
           ),
           Positioned(
@@ -39,7 +43,7 @@ class ProfilePic extends StatelessWidget {
                 child: SvgPicture.asset("assets/icons/Camera Icon.svg"),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
