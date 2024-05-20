@@ -7,7 +7,6 @@ import 'package:shop_app/screens/utils/dio_client.dart';
 class AuthServices {
   Dio dio = Dio();
   final storage = FlutterSecureStorage();
-
   Future<bool> login(String email, String password) async {
     try {
       final response = await dio.post(

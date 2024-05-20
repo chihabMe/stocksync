@@ -23,6 +23,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Future<void> _refreshProducts() async {
+    print('refreshing');
     setState(() {
       _futureProducts = productService.getProducts();
     });
@@ -47,25 +48,30 @@ class _ProductsScreenState extends State<ProductsScreen> {
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(child: Text('No products found'));
               } else {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: GridView.builder(
-                    itemCount: snapshot.data!.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      childAspectRatio: 0.7,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 16,
-                    ),
-                    itemBuilder: (context, index) => ProductCard(
-                      productService: productService,
-                      product: snapshot.data![index],
-                      onPress: () => Navigator.pushNamed(
-                        context,
-                        DetailsScreen.routeName,
-                        arguments: ProductDetailsArguments(
-                            product: snapshot.data![index]),
+                return SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data!.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        childAspectRatio: 0.7,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 16,
+                      ),
+                      itemBuilder: (context, index) => ProductCard(
+                        productService: productService,
+                        product: snapshot.data![index],
+                        onPress: () => Navigator.pushNamed(
+                          context,
+                          DetailsScreen.routeName,
+                          arguments: ProductDetailsArguments(
+                              product: snapshot.data![index]),
+                        ),
                       ),
                     ),
                   ),

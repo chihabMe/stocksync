@@ -21,8 +21,7 @@ class SellersListView(ListAPIView):
 
 class SellersActivationRequestsListView(ListAPIView):
     serializer_class = UserSerializer
-    # permission_classes = [IsAuthenticated,IsAdmin]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,IsAdmin]
     def get_queryset(self):
         return  User.objects.filter(is_active=False,user_type=User.UserTypesChoices.SELLER)
 # class ActiveSellerAccount(RetrieveUpdateDestroyAPIView):
@@ -48,10 +47,6 @@ class SellerDetailserializer(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return SellerProfile.objects.all()
-    def get_object(self):
-        id = self.kwargs.get("id")
-        obj = get_object_or_404(SellerProfile,user__id=id)
-        return obj
 
 
     def get_serializer_class(self):
