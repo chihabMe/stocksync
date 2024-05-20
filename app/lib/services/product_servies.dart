@@ -43,4 +43,14 @@ class ProductService {
       rethrow; // Re-throws the caught error for higher-level handling
     }
   }
+
+  Future<bool> toggleLike(String productId) async {
+    try {
+      final response = await dio.post("$productEndpoint$productId/like/");
+      return response.statusCode == 200;
+    } catch (error) {
+      print("Error occurred: $error");
+      rethrow;
+    }
+  }
 }

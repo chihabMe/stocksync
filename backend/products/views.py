@@ -1,14 +1,16 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView,RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView,RetrieveUpdateDestroyAPIView,GenericAPIView
 from .models import Product,ProductCategory
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated
 from .serializers import  ProductSerializer,ProductCategoryManagerSerializer,ProductCategorySerializer
-from common.permissions    import IsAdmin
+from common.permissions    import IsAdmin,IsSeller,IsClient
+from rest_framework.response import Response
+
 
 
 ## views for the client 
 class ProductsAddListView(ListAPIView):
     queryset = Product.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,IsClient]
     serializer_class = ProductSerializer
     def get_queryset(self):
         order_by = self.request.GET.get("order_by")
@@ -16,16 +18,26 @@ class ProductsAddListView(ListAPIView):
             return Product.objects.all().order_by("-created_at")
         return Product.objects.all()
 
+class LikeProductView(GenericAPIView):
+    def post(self,request,id):
+        product = Product.objects.get(id=id)
+        user = request.user
+        if user in product.favored_by.all():
+            product.favored_by.remove(user)
+            return Response({"message":"unliked"})
+        else:
+            product.favored_by.add(user)
+            return Response({"message":"liked"})
 
 class ProductCreateUpdateDestroyView(RetrieveAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated,IsSeller]
     queryset = Product.objects.all()
     lookup_field = 'slug'
     serializer_class = ProductSerializer
 
 class ProductCategoryListView(ListAPIView):
     queryset = ProductCategory.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = ProductCategorySerializer
 
 ## views for the admin user 

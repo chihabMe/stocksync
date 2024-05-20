@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop_app/services/product_servies.dart';
 
 import '../constants.dart';
 import '../models/Product.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({
-    Key? key,
-    this.width = 150,
-    this.aspectRetio = 1.04,
-    required this.product,
-    required this.onPress,
-  }) : super(key: key);
+  final ProductService productService;
+  const ProductCard(
+      {Key? key,
+      this.width = 150,
+      this.aspectRetio = 1.04,
+      required this.product,
+      required this.onPress,
+      required this.productService})
+      : super(key: key);
 
   final double width, aspectRetio;
   final Product product;
   final VoidCallback onPress;
+
+  void handleLike() async {
+    print('cliked');
+    bool response = await productService.toggleLike(product.id);
+    print(response);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +76,18 @@ class ProductCard extends StatelessWidget {
                           : kSecondaryColor.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: SvgPicture.asset(
-                      "assets/icons/Heart Icon_2.svg",
-                      colorFilter: ColorFilter.mode(
-                          product.isLiked
-                              ? const Color(0xFFFF4848)
-                              : const Color(0xFFDBDEE4),
-                          BlendMode.srcIn),
+                    child: GestureDetector(
+                      onTap: () {
+                        handleLike();
+                      },
+                      child: SvgPicture.asset(
+                        "assets/icons/Heart Icon_2.svg",
+                        colorFilter: ColorFilter.mode(
+                            product.isLiked
+                                ? const Color(0xFFFF4848)
+                                : const Color(0xFFDBDEE4),
+                            BlendMode.srcIn),
+                      ),
                     ),
                   ),
                 ),

@@ -38,6 +38,7 @@ class ProductsScreen extends StatelessWidget {
                     crossAxisSpacing: 16,
                   ),
                   itemBuilder: (context, index) => ProductCard(
+                    productService: productService,
                     product: snapshot.data![index],
                     onPress: () => Navigator.pushNamed(
                       context,

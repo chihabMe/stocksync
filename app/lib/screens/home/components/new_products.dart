@@ -46,6 +46,7 @@ class NewProducts extends StatelessWidget {
                       return Padding(
                         padding: EdgeInsets.only(left: 25),
                         child: ProductCard(
+                          productService: productService,
                           product: products[index],
                           onPress: () => Navigator.pushNamed(
                             context,

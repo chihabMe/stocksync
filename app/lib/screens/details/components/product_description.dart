@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop_app/services/product_servies.dart';
 
 import '../../../constants.dart';
 import '../../../models/Product.dart';
 
 class ProductDescription extends StatelessWidget {
-  const ProductDescription({
+  ProductDescription({
     Key? key,
     required this.product,
     this.pressOnSeeMore,
@@ -13,6 +14,15 @@ class ProductDescription extends StatelessWidget {
 
   final Product product;
   final GestureTapCallback? pressOnSeeMore;
+  ProductService productService = new ProductService();
+
+  void handleLike() async {
+    print('------');
+    print('cliked');
+    bool response = await productService.toggleLike(product.id);
+    print(response);
+    print('------');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +50,17 @@ class ProductDescription extends StatelessWidget {
                 bottomLeft: Radius.circular(20),
               ),
             ),
-            child: SvgPicture.asset(
-              "assets/icons/Heart Icon_2.svg",
-              colorFilter: ColorFilter.mode(
-                  product.isLiked
-                      ? const Color(0xFFFF4848)
-                      : const Color(0xFFDBDEE4),
-                  BlendMode.srcIn),
-              height: 16,
+            child: GestureDetector(
+              onTap: handleLike,
+              child: SvgPicture.asset(
+                "assets/icons/Heart Icon_2.svg",
+                colorFilter: ColorFilter.mode(
+                    product.isLiked
+                        ? const Color(0xFFFF4848)
+                        : const Color(0xFFDBDEE4),
+                    BlendMode.srcIn),
+                height: 16,
+              ),
             ),
           ),
         ),

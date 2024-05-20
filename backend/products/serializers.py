@@ -23,7 +23,8 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'name','is_liked','rating','images', 'slug', 'price', 'category','description','stock']
     def get_is_liked(self,obj):
-        return random.choice([True,False])
+        user = self.context.get('request').user
+        return user in obj.favored_by.all()
 
     def get_rating(self,obj):
         return random.choice([1,2,3,4,5])

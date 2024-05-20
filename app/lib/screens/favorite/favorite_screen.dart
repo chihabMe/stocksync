@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/components/product_card.dart';
 import 'package:shop_app/models/Product.dart';
+import 'package:shop_app/services/product_servies.dart';
 
 import '../details/details_screen.dart';
 
 class FavoriteScreen extends StatelessWidget {
-  const FavoriteScreen({super.key});
+  ProductService productService = ProductService();
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class FavoriteScreen extends StatelessWidget {
                   crossAxisSpacing: 16,
                 ),
                 itemBuilder: (context, index) => ProductCard(
+                  productService: productService,
                   product: demoProducts[index],
                   onPress: () => Navigator.pushNamed(
                     context,

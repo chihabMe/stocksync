@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "sellers",
     "clients",
     "complains",
+    "favorites",
     "common"
 ]
 

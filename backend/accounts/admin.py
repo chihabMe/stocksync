@@ -33,7 +33,7 @@ class CustomUserAdmin(UserAdmin):
         ),
         (
             "Permissions",
-            {"fields": ("is_active", "is_staff", "is_superuser", "user_type")},
+            {"fields": ("is_active", "is_staff", "image","is_superuser", "user_type")},
         ),
         ("Important dates", {"fields": ("last_login", "created_at", "updated_at")}),
     )

@@ -7,8 +7,9 @@ from django.core.validators import MaxValueValidator,MinValueValidator
 from io import BytesIO
 from PIL import Image
 from django.core.files.base import ContentFile
+from django.contrib.auth import get_user_model
 
-# Create your models here.
+User = get_user_model()
 class ProductCategory(BaseModel):
     name = models.CharField(max_length=100,unique=True)
     slug = models.SlugField(max_length=120, unique=True,blank=True)
@@ -27,6 +28,7 @@ class Product(BaseModel):
     price = models.DecimalField(max_digits=10,decimal_places=2)
     category = models.ForeignKey(ProductCategory,related_name='products',on_delete=models.CASCADE)
     stock = models.PositiveIntegerField(default=1)
+    favored_by = models.ManyToManyField(User,related_name='favorites',blank=True)
 
     def featured_image(self):
         featured = self.images.fitler(is_featured=True).first()
@@ -48,6 +50,7 @@ class ProductCoupon(BaseModel):
     seller = models.ForeignKey(SellerProfile,related_name="generated_coupons",on_delete=models.CASCADE)
     product = models.ForeignKey(Product,related_name="coupons",on_delete=models.CASCADE)
     expiry_date = models.DateTimeField()
+
 def product_image_uploader(instance, filename):
     return os.path.join("products", str(instance.product.id), filename)
 class ProductImage(BaseModel):
