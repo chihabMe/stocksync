@@ -53,4 +53,17 @@ class ProductService {
       rethrow;
     }
   }
+
+  Future<List<Product>> getLikedProducts() async {
+    try {
+      final response = await dio.get(likedProductsEndpoint);
+      ListResponse<Product> listResponse =
+          ListResponse.fromJson(response.data, Product.fromJson);
+      List<Product> products = listResponse.results;
+      return products;
+    } catch (error) {
+      print("Error accursed : $error ");
+      rethrow; // Re-throws the caught error for higher-level handling
+    }
+  }
 }

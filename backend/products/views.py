@@ -17,7 +17,13 @@ class ProductsAddListView(ListAPIView):
         if order_by=="new":
             return Product.objects.all().order_by("-created_at")
         return Product.objects.all()
-
+class LikedProductsListView(ListAPIView):
+    queryset = Product.objects.all()
+    permission_classes = [IsAuthenticated,IsClient]
+    serializer_class = ProductSerializer
+    def get_queryset(self):
+        user = self.request.user
+        return user.favorites.all()
 class LikeProductView(GenericAPIView):
     def post(self,request,id):
         product = Product.objects.get(id=id)

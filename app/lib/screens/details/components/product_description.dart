@@ -5,7 +5,7 @@ import 'package:shop_app/services/product_servies.dart';
 import '../../../constants.dart';
 import '../../../models/Product.dart';
 
-class ProductDescription extends StatelessWidget {
+class ProductDescription extends StatefulWidget {
   ProductDescription({
     Key? key,
     required this.product,
@@ -14,14 +14,29 @@ class ProductDescription extends StatelessWidget {
 
   final Product product;
   final GestureTapCallback? pressOnSeeMore;
-  ProductService productService = new ProductService();
+
+  @override
+  _ProductDescriptionState createState() => _ProductDescriptionState();
+}
+
+class _ProductDescriptionState extends State<ProductDescription> {
+  late bool isLiked;
+  ProductService productService = ProductService();
+
+  @override
+  void initState() {
+    super.initState();
+    isLiked = widget.product.isLiked;
+  }
 
   void handleLike() async {
-    print('------');
-    print('cliked');
-    bool response = await productService.toggleLike(product.id);
+    bool response = await productService.toggleLike(widget.product.id);
+    if (response) {
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
     print(response);
-    print('------');
   }
 
   @override
@@ -32,7 +47,7 @@ class ProductDescription extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            product.name,
+            widget.product.name,
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
@@ -42,9 +57,8 @@ class ProductDescription extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             width: 48,
             decoration: BoxDecoration(
-              color: product.isLiked
-                  ? const Color(0xFFFFE6E6)
-                  : const Color(0xFFF5F6F9),
+              color:
+                  isLiked ? const Color(0xFFFFE6E6) : const Color(0xFFF5F6F9),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 bottomLeft: Radius.circular(20),
@@ -55,9 +69,7 @@ class ProductDescription extends StatelessWidget {
               child: SvgPicture.asset(
                 "assets/icons/Heart Icon_2.svg",
                 colorFilter: ColorFilter.mode(
-                    product.isLiked
-                        ? const Color(0xFFFF4848)
-                        : const Color(0xFFDBDEE4),
+                    isLiked ? const Color(0xFFFF4848) : const Color(0xFFDBDEE4),
                     BlendMode.srcIn),
                 height: 16,
               ),
@@ -70,7 +82,7 @@ class ProductDescription extends StatelessWidget {
             right: 64,
           ),
           child: Text(
-            product.description ?? "",
+            widget.product.description ?? "",
             maxLines: 3,
           ),
         ),
