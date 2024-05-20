@@ -5,7 +5,6 @@ import 'package:shop_app/models/User.dart';
 class ProfilePic extends StatelessWidget {
   final User user;
 
-  // Constructor should not be constant if it has a body or uses non-constant values
   ProfilePic({
     Key? key,
     required this.user,
@@ -13,6 +12,13 @@ class ProfilePic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use a default placeholder if user.image is null or empty
+    final String? imageUrl = user.image;
+    final ImageProvider backgroundImage =
+        (imageUrl != null && imageUrl.isNotEmpty)
+            ? NetworkImage(imageUrl)
+            : AssetImage('assets/images/avatar.png') as ImageProvider;
+
     return SizedBox(
       height: 115,
       width: 115,
@@ -20,9 +26,8 @@ class ProfilePic extends StatelessWidget {
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          // Remove const from CircleAvatar as user.image is a non-constant value
           CircleAvatar(
-            backgroundImage: NetworkImage(user.image),
+            backgroundImage: backgroundImage,
           ),
           Positioned(
             right: -16,

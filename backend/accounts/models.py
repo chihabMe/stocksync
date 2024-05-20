@@ -27,6 +27,8 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+def user_image_name(instance, filename):
+    return f"users/profile-image/{instance.id}/{filename}"
 class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
 
     class UserTypesChoices(models.TextChoices):
@@ -34,12 +36,14 @@ class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
         ADMIN = "admin"
         SELLER = "seller"
 
+    image = models.ImageField(upload_to=user_image_name, null=True, blank=True)
     first_name = models.CharField("first name", max_length=200, blank=True)
     last_name = models.CharField("last name", max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField("active", default=False)
     is_staff = models.BooleanField("is staff", default=False)
+
 
     user_type = models.CharField(
         max_length=20, choices=UserTypesChoices.choices, default=UserTypesChoices.CLIENT

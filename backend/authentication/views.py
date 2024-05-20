@@ -21,9 +21,11 @@ class TokenLogoutView(APIView):
         return Response(status=status.HTTP_200_OK, data=data)
 
 
+
 class AuthenticatedUserView(APIView):
     permission_classes = [IsAuthenticated]
-
+    
     def get(self, request):
-        serializer = AuthenticatedUserSerializer(request.user)
+        user = request.user
+        serializer = AuthenticatedUserSerializer(user, context={'request': request})
         return Response(serializer.data)

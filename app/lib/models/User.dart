@@ -7,7 +7,7 @@ class User {
   String id;
   String email;
   String username;
-  String image;
+  String? image;
   UserType userType;
 
   User({
@@ -34,7 +34,7 @@ class User {
       id: json['id'],
       email: json['email'],
       username: json['username'] ?? "None",
-      image: json['image'] ?? "",
+      image: json['image'],
       userType: UserType.values.firstWhere(
         (e) => e.toString().split('.').last == json['user_type'],
       ),
