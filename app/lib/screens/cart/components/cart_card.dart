@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/CartItem.dart';
+import 'package:shop_app/services/cart_servies.dart';
 
-class CartCard extends StatelessWidget {
+class CartCard extends StatefulWidget {
   final CartItem cartItem;
+  final VoidCallback onQuantityChanged;
 
   const CartCard({
     Key? key,
     required this.cartItem,
+    required this.onQuantityChanged,
   }) : super(key: key);
+
+  @override
+  _CartCardState createState() => _CartCardState();
+}
+
+class _CartCardState extends State<CartCard> {
+  late int quantity;
+  final CartService _cartService = CartService();
+
+  @override
+  void initState() {
+    super.initState();
+    quantity = widget.cartItem.quantity;
+  }
+
+  void _updateQuantity(int newQuantity) async {
+    if (newQuantity > 0) {
+      await _cartService.updateQuantity(widget.cartItem.product, newQuantity);
+      setState(() {
+        quantity = newQuantity;
+      });
+    } else {
+      await _cartService.removeFromCart(widget.cartItem.product);
+    }
+    widget.onQuantityChanged();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +50,7 @@ class CartCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
-                image: NetworkImage(cartItem
-                    .product.images.first), // Assuming images is a list of URLs
+                image: NetworkImage(widget.cartItem.product.images.first),
                 fit: BoxFit.cover,
               ),
             ),
@@ -33,7 +61,7 @@ class CartCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  cartItem.product.name,
+                  widget.cartItem.product.name,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -41,18 +69,34 @@ class CartCard extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  '\$${cartItem.product.price.toStringAsFixed(2)}', // Assuming price is a double
+                  '\$${widget.cartItem.product.price.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.green,
                   ),
                 ),
                 SizedBox(height: 4),
-                Text(
-                  'Quantity: ${cartItem.quantity}',
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove),
+                      onPressed: () {
+                        _updateQuantity(quantity - 1);
+                      },
+                    ),
+                    Text(
+                      '$quantity',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        _updateQuantity(quantity + 1);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

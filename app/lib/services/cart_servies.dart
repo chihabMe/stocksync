@@ -34,6 +34,31 @@ class CartService {
     await prefs.setStringList(_cartKey, updatedCart);
   }
 
+  Future<void> updateQuantity(Product product, int newQuantity) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> cartItems = prefs.getStringList(_cartKey) ?? [];
+
+    List<CartItem> currentCart = cartItems.map((item) {
+      Map<String, dynamic> itemMap = jsonDecode(item);
+      return CartItem.fromJson(itemMap);
+    }).toList();
+
+    if (newQuantity > 0) {
+      for (var cartItem in currentCart) {
+        if (cartItem.product.id == product.id) {
+          cartItem.quantity = newQuantity;
+          break;
+        }
+      }
+    } else {
+      currentCart.removeWhere((cartItem) => cartItem.product.id == product.id);
+    }
+
+    List<String> updatedCart =
+        currentCart.map((item) => jsonEncode(item.toJson())).toList();
+    await prefs.setStringList(_cartKey, updatedCart);
+  }
+
   Future<void> removeFromCart(Product product) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> cartItems = prefs.getStringList(_cartKey) ?? [];
@@ -51,22 +76,12 @@ class CartService {
   }
 
   Future<List<CartItem>> getCartItems() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      List<String> cartItems = prefs.getStringList(_cartKey) ?? [];
-      List<CartItem> currentCart = [];
-
-      for (var itemJson in cartItems) {
-        Map<String, dynamic> itemMap = jsonDecode(itemJson);
-        CartItem cartItem = CartItem.fromJson(itemMap);
-        currentCart.add(cartItem);
-      }
-
-      return currentCart;
-    } catch (error) {
-      print("Error occurred: $error");
-      rethrow;
-    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> cartItems = prefs.getStringList(_cartKey) ?? [];
+    return cartItems.map((item) {
+      Map<String, dynamic> itemMap = jsonDecode(item);
+      return CartItem.fromJson(itemMap);
+    }).toList();
   }
 
   Future<void> clearCart() async {

@@ -19,6 +19,20 @@ class _CartScreenState extends State<CartScreen> {
   final CartService _cartService = CartService();
   double total = 0;
 
+  Future<void> _refreshCart() async {
+    List<CartItem> cartItems = await _cartService.getCartItems();
+    setState(() {
+      total = cartItems.fold(
+          0, (sum, item) => sum + item.product.price * item.quantity);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshCart();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,9 +46,6 @@ class _CartScreenState extends State<CartScreen> {
             FutureBuilder<List<CartItem>>(
               future: _cartService.getCartItems(),
               builder: (context, snapshot) {
-                print("------------cart screen----------");
-                print(snapshot.data);
-                print("------------cart screen----------");
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const SizedBox();
                 } else if (snapshot.hasError) {
@@ -66,10 +77,6 @@ class _CartScreenState extends State<CartScreen> {
               );
             } else {
               List<CartItem> cartItems = snapshot.data!;
-              total = 0;
-              cartItems.forEach((item) {
-                total += item.product.price * item.quantity;
-              });
               return ListView.builder(
                 itemCount: cartItems.length,
                 itemBuilder: (context, index) => Padding(
@@ -77,10 +84,15 @@ class _CartScreenState extends State<CartScreen> {
                   child: Dismissible(
                     key: Key(cartItems[index].product.id),
                     direction: DismissDirection.endToStart,
-                    onDismissed: (direction) {
+                    onDismissed: (direction) async {
+                      await _cartService
+                          .removeFromCart(cartItems[index].product);
                       setState(() {
-                        _cartService.removeFromCart(cartItems[index].product);
                         cartItems.removeAt(index);
+                        total = cartItems.fold(
+                            0,
+                            (sum, item) =>
+                                sum + item.product.price * item.quantity);
                       });
                     },
                     background: Container(
@@ -96,7 +108,10 @@ class _CartScreenState extends State<CartScreen> {
                         ],
                       ),
                     ),
-                    child: CartCard(cartItem: cartItems[index]),
+                    child: CartCard(
+                      cartItem: cartItems[index],
+                      onQuantityChanged: _refreshCart,
+                    ),
                   ),
                 ),
               );
