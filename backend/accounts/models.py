@@ -17,6 +17,7 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("user_type", CustomUser.UserTypesChoices.ADMIN)
 
         if extra_fields.get("is_staff") is not True:
@@ -41,7 +42,7 @@ class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
     last_name = models.CharField("last name", max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField("active", default=False)
+    is_active = models.BooleanField("active", default=True)
     is_staff = models.BooleanField("is staff", default=False)
 
 

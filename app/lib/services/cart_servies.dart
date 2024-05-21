@@ -7,6 +7,8 @@ import 'package:shop_app/models/Product.dart';
 class CartService {
   static const _cartKey = 'cart';
 
+  VoidCallback? cartChangeListener; // Add a callback for cart changes
+
   Future<void> addToCart(Product product, int quantity) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> cartItems = prefs.getStringList(_cartKey) ?? [];
@@ -32,6 +34,9 @@ class CartService {
     List<String> updatedCart =
         currentCart.map((item) => jsonEncode(item.toJson())).toList();
     await prefs.setStringList(_cartKey, updatedCart);
+    if (cartChangeListener != null) {
+      cartChangeListener!();
+    }
   }
 
   Future<void> updateQuantity(Product product, int newQuantity) async {

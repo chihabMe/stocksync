@@ -30,6 +30,6 @@ final Map<String, WidgetBuilder> routes = {
   ProtectedScreen.routeName: (context) => ProtectedScreen(),
   ProductsScreen.routeName: (context) => ProductsScreen(),
   DetailsScreen.routeName: (context) => DetailsScreen(),
-  CartScreen.routeName: (context) => const CartScreen(),
+  CartScreen.routeName: (context) => CartScreen(),
   ProfileScreen.routeName: (context) => ProfileScreen(),
 };

@@ -9,7 +9,7 @@ class ProductImageInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'stock']  # Display fields in the list view
+    list_display = ['id','name', 'price', 'stock']  # Display fields in the list view
     prepopulated_fields = {'slug': ('name',)}  # Auto-generate slug from the name
     search_fields = ['name', 'price', 'slug']  # Optional: for easier search in the admin
     inlines = [ProductImageInline]

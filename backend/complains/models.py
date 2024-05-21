@@ -1,7 +1,8 @@
 from django.db import models
 from common.base_model import BaseModel
-from products.models import Product
+# from products.models import Product
 from clients.models import ClientProfile
+from orders.models import Order
 
 # Create your models here.
 
@@ -10,7 +11,7 @@ class Complain(BaseModel):
         PENDING = "pending","pending"
         RESOLVED = "resolved","resolved"
         CLOSED = "closed","closed"
-    product = models.ForeignKey(Product,related_name="complains",on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,related_name="complains",on_delete=models.CASCADE)
     client = models.ForeignKey(ClientProfile,related_name="complains",on_delete=models.CASCADE)
     description = models.TextField()
     status = models.CharField(max_length=10,default=ComplainStatusChoices.PENDING,choices=ComplainStatusChoices.choices)

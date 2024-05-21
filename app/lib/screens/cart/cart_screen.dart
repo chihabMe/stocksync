@@ -9,7 +9,7 @@ import 'components/check_out_card.dart';
 class CartScreen extends StatefulWidget {
   static String routeName = "/cart";
 
-  const CartScreen({Key? key}) : super(key: key);
+  CartScreen({Key? key}) : super(key: key);
 
   @override
   State<CartScreen> createState() => _CartScreenState();

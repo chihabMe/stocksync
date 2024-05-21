@@ -32,6 +32,7 @@ api_v1 = [
     path("api/v1/sellers/", include("sellers.urls")),
     path("api/v1/clients/", include("clients.urls")),
     path("api/v1/complains/", include("complains.urls")),
+    path("api/v1/orders/", include("orders.urls")),
 ]
 
 urlpatterns += api_v1
