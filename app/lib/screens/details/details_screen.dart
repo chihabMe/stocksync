@@ -15,9 +15,10 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductDetailsArguments agrs =
+    final ProductDetailsArguments args =
         ModalRoute.of(context)!.settings.arguments as ProductDetailsArguments;
-    final product = agrs.product;
+    final product = args.product;
+
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -84,6 +85,10 @@ class DetailsScreen extends StatelessWidget {
                 ProductDescription(
                   productId: product.id,
                   pressOnSeeMore: () {},
+                  onLikeChanged: (isLiked) {
+                    // Notify the parent widget about the like status change
+                    Navigator.pop(context, isLiked);
+                  },
                 ),
                 TopRoundedContainer(
                   color: const Color(0xFFF6F7F9),

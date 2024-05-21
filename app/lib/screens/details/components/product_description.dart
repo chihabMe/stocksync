@@ -10,10 +10,12 @@ class ProductDescription extends StatefulWidget {
     Key? key,
     required this.productId,
     this.pressOnSeeMore,
+    required this.onLikeChanged,
   }) : super(key: key);
 
   final String productId;
   final GestureTapCallback? pressOnSeeMore;
+  final ValueChanged<bool> onLikeChanged; // Add this callback
   final ProductService productService = ProductService();
 
   @override
@@ -42,10 +44,11 @@ class _ProductDescriptionState extends State<ProductDescription> {
     // Call the backend service to toggle like
     bool response = await productService.toggleLike(product.id);
     if (response) {
-      // If the operation is successful, update the UI
+      // If the operation is successful, update the UI and notify the parent
       setState(() {
         isLiked = !isLiked; // Toggle the like state
       });
+      widget.onLikeChanged(isLiked); // Notify the parent about the change
     }
   }
 
