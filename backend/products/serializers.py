@@ -3,10 +3,6 @@ import random
 from .models import Product, ProductCategory, ProductImage, ProductCoupon
 from django.utils import timezone
 
-class ProductImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductImage
-        fields = ["id", 'image']
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,10 +10,20 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'slug', 'parent']
         ref_name = "ProductCategoryDefault"  # Add a unique ref_name here
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductImage
+        fields = ['image']
+
+    def get_image(self, obj):
+        return obj.image.url
+
 class ProductSerializer(serializers.ModelSerializer):
     is_liked = serializers.SerializerMethodField('get_is_liked')
     rating = serializers.SerializerMethodField('get_rating')
-    images = ProductImageSerializer(read_only=True, many=True)
+    images = serializers.SerializerMethodField('get_image_urls')
     category = ProductCategorySerializer(read_only=True)
 
     class Meta:
@@ -30,6 +36,12 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_rating(self, obj):
         return random.choice([1, 2, 3, 4, 5])
+
+    def get_image_urls(self, obj):
+        request = self.context.get('request')
+        absolute_base_url = request.build_absolute_uri('/')[:-1]  # Remove the trailing slash
+        image_urls = [absolute_base_url + image.image.url for image in obj.images.all()]
+        return image_urls
 
 class ProductCategoryManagerSerializer(serializers.ModelSerializer):  # Inheriting directly from serializers.ModelSerializer
 

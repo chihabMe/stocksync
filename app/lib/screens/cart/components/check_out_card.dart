@@ -4,8 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../constants.dart';
 
 class CheckoutCard extends StatelessWidget {
+  final double totalAmount;
+
   const CheckoutCard({
     Key? key,
+    required this.totalAmount,
   }) : super(key: key);
 
   @override
@@ -60,13 +63,14 @@ class CheckoutCard extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text.rich(
                     TextSpan(
                       text: "Total:\n",
                       children: [
                         TextSpan(
-                          text: "\$337.15",
+                          text:
+                              "\$$totalAmount", // Use the provided total amount here
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ],

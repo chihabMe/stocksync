@@ -25,7 +25,7 @@ class _ProductImagesState extends State<ProductImages> {
           width: 238,
           child: AspectRatio(
             aspectRatio: 1,
-            child: Image.network(widget.product.images[selectedImage].image),
+            child: Image.network(widget.product.images[selectedImage]),
           ),
         ),
         // SizedBox(height: 20),
@@ -43,7 +43,7 @@ class _ProductImagesState extends State<ProductImages> {
                         selectedImage = index;
                       });
                     },
-                    image: widget.product.images[index].image),
+                    image: widget.product.images[index]),
               ),
             ],
           ),

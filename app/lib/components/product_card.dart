@@ -61,7 +61,7 @@ class _ProductCardState extends State<ProductCard> {
                   color: kSecondaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Image.network(widget.product.images[0].image),
+                child: Image.network(widget.product.images[0]),
               ),
             ),
             const SizedBox(height: 8),

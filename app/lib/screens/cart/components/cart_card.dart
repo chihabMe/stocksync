@@ -1,59 +1,64 @@
 import 'package:flutter/material.dart';
-
-import '../../../constants.dart';
-import '../../../models/Cart.dart';
+import 'package:shop_app/models/CartItem.dart';
 
 class CartCard extends StatelessWidget {
+  final CartItem cartItem;
+
   const CartCard({
     Key? key,
-    required this.cart,
+    required this.cartItem,
   }) : super(key: key);
-
-  final Cart cart;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 88,
-          child: AspectRatio(
-            aspectRatio: 0.88,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF5F6F9),
-                borderRadius: BorderRadius.circular(15),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: NetworkImage(cartItem
+                    .product.images.first), // Assuming images is a list of URLs
+                fit: BoxFit.cover,
               ),
-              child: Image.network(cart.product.images[0].image),
             ),
           ),
-        ),
-        const SizedBox(width: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              cart.product.name,
-              style: const TextStyle(color: Colors.black, fontSize: 16),
-              maxLines: 2,
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  cartItem.product.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  '\$${cartItem.product.price.toStringAsFixed(2)}', // Assuming price is a double
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Quantity: ${cartItem.quantity}',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text.rich(
-              TextSpan(
-                text: "\$${cart.product.price}",
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600, color: kPrimaryColor),
-                children: [
-                  TextSpan(
-                      text: " x${cart.numOfItem}",
-                      style: Theme.of(context).textTheme.bodyLarge),
-                ],
-              ),
-            )
-          ],
-        )
-      ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -26,10 +26,10 @@ final Map<String, WidgetBuilder> routes = {
   SignUpScreen.routeName: (context) => SignUpScreen(),
   CompleteProfileScreen.routeName: (context) => const CompleteProfileScreen(),
   OtpScreen.routeName: (context) => const OtpScreen(),
-  HomeScreen.routeName: (context) => const HomeScreen(),
+  // HomeScreen.routeName: (context) => const HomeScreen(),
   ProtectedScreen.routeName: (context) => ProtectedScreen(),
   ProductsScreen.routeName: (context) => ProductsScreen(),
-  DetailsScreen.routeName: (context) => const DetailsScreen(),
+  DetailsScreen.routeName: (context) => DetailsScreen(),
   CartScreen.routeName: (context) => const CartScreen(),
   ProfileScreen.routeName: (context) => ProfileScreen(),
 };
