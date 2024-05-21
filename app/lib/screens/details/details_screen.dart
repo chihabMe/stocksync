@@ -82,7 +82,7 @@ class DetailsScreen extends StatelessWidget {
             child: Column(
               children: [
                 ProductDescription(
-                  product: product,
+                  productId: product.id,
                   pressOnSeeMore: () {},
                 ),
                 TopRoundedContainer(

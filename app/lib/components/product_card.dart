@@ -5,7 +5,7 @@ import 'package:shop_app/services/product_servies.dart';
 import '../constants.dart';
 import '../models/Product.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final ProductService productService;
   const ProductCard(
       {Key? key,
@@ -20,18 +20,36 @@ class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onPress;
 
+  @override
+  _ProductCardState createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  late bool isLiked;
+
+  @override
+  void initState() {
+    super.initState();
+    isLiked = widget.product.isLiked;
+  }
+
   void handleLike() async {
-    print('cliked');
-    bool response = await productService.toggleLike(product.id);
+    print('clicked');
+    bool response = await widget.productService.toggleLike(widget.product.id);
+    if (response) {
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
     print(response);
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
+      width: widget.width,
       child: GestureDetector(
-        onTap: onPress,
+        onTap: widget.onPress,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,12 +61,12 @@ class ProductCard extends StatelessWidget {
                   color: kSecondaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Image.network(product.images[0].image),
+                child: Image.network(widget.product.images[0].image),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              product.name,
+              widget.product.name,
               style: Theme.of(context).textTheme.bodyMedium,
               maxLines: 2,
             ),
@@ -56,7 +74,7 @@ class ProductCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "\$${product.price}",
+                  "\$${widget.product.price}",
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -65,29 +83,24 @@ class ProductCard extends StatelessWidget {
                 ),
                 InkWell(
                   borderRadius: BorderRadius.circular(50),
-                  onTap: () {},
+                  onTap: handleLike,
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     height: 24,
                     width: 24,
                     decoration: BoxDecoration(
-                      color: product.isLiked
+                      color: isLiked
                           ? kPrimaryColor.withOpacity(0.15)
                           : kSecondaryColor.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: GestureDetector(
-                      onTap: () {
-                        handleLike();
-                      },
-                      child: SvgPicture.asset(
-                        "assets/icons/Heart Icon_2.svg",
-                        colorFilter: ColorFilter.mode(
-                            product.isLiked
-                                ? const Color(0xFFFF4848)
-                                : const Color(0xFFDBDEE4),
-                            BlendMode.srcIn),
-                      ),
+                    child: SvgPicture.asset(
+                      "assets/icons/Heart Icon_2.svg",
+                      colorFilter: ColorFilter.mode(
+                          isLiked
+                              ? const Color(0xFFFF4848)
+                              : const Color(0xFFDBDEE4),
+                          BlendMode.srcIn),
                     ),
                   ),
                 ),

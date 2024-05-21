@@ -35,10 +35,16 @@ class LikeProductView(GenericAPIView):
             product.favored_by.add(user)
             return Response({"message":"liked"})
 
-class ProductCreateUpdateDestroyView(RetrieveAPIView):
+class ProductClientDetailsView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated,IsClient]
+    queryset = Product.objects.all()
+    lookup_field = 'id'
+    serializer_class = ProductSerializer
+
+class ProductCreateUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated,IsSeller]
     queryset = Product.objects.all()
-    lookup_field = 'slug'
+    lookup_field = 'id'
     serializer_class = ProductSerializer
 
 class ProductCategoryListView(ListAPIView):

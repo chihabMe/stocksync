@@ -66,4 +66,15 @@ class ProductService {
       rethrow; // Re-throws the caught error for higher-level handling
     }
   }
+
+  Future<Product> getProduct(String productId) async {
+    try {
+      final response = await dio.get("$productEndpoint$productId/");
+      Product product = Product.fromJson(response.data);
+      return product;
+    } catch (error) {
+      print("Error occurred: $error");
+      rethrow;
+    }
+  }
 }
