@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/screens/init_screen.dart';
 import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
 import 'package:shop_app/screens/home/home_screen.dart';
+import 'package:shop_app/services/auth_servies.dart';
 import 'package:shop_app/services/user_servies.dart';
 
 class ProtectedScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class ProtectedScreen extends StatefulWidget {
 
 class _ProtectedScreenState extends State<ProtectedScreen> {
   final UserServices _userServices = UserServices();
+  final AuthServices _authServies = AuthServices();
   bool _isLoading = true;
   bool _isNavigating = false;
 

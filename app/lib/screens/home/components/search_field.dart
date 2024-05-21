@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-
 import '../../../constants.dart';
 
 class SearchField extends StatelessWidget {
+  final ValueChanged<String> onChanged;
+  final VoidCallback onSearchPressed;
+
   const SearchField({
     Key? key,
+    required this.onChanged,
+    required this.onSearchPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Form(
       child: TextFormField(
-        onChanged: (value) {},
+        onChanged: onChanged,
         decoration: InputDecoration(
           filled: true,
           fillColor: kSecondaryColor.withOpacity(0.1),
@@ -21,7 +25,10 @@ class SearchField extends StatelessWidget {
           focusedBorder: searchOutlineInputBorder,
           enabledBorder: searchOutlineInputBorder,
           hintText: "Search product",
-          prefixIcon: const Icon(Icons.search),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: onSearchPressed,
+          ),
         ),
       ),
     );

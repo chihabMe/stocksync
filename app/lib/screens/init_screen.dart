@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop_app/constants.dart';
 import 'package:shop_app/screens/favorite/favorite_screen.dart';
 import 'package:shop_app/screens/home/home_screen.dart';
 import 'package:shop_app/screens/profile/profile_screen.dart';
+import 'package:shop_app/screens/search/search_screen.dart';
 
 const Color inActiveIconColor = Color(0xFFB6B6B6);
 
@@ -25,7 +25,12 @@ class _InitScreenState extends State<InitScreen> {
     });
   }
 
-  final pages = [const HomeScreen(), FavoriteScreen(), ProfileScreen()];
+  final pages = [
+    const HomeScreen(),
+    FavoriteScreen(),
+    SearchScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -39,55 +44,48 @@ class _InitScreenState extends State<InitScreen> {
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/Shop Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                inActiveIconColor,
-                BlendMode.srcIn,
-              ),
+            icon: Icon(
+              Icons.home_outlined,
+              color: inActiveIconColor,
             ),
-            activeIcon: SvgPicture.asset(
-              "assets/icons/Shop Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                kPrimaryColor,
-                BlendMode.srcIn,
-              ),
+            activeIcon: Icon(
+              Icons.home,
+              color: kPrimaryColor,
             ),
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/Heart Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                inActiveIconColor,
-                BlendMode.srcIn,
-              ),
+            icon: Icon(
+              Icons.favorite_border,
+              color: inActiveIconColor,
             ),
-            activeIcon: SvgPicture.asset(
-              "assets/icons/Heart Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                kPrimaryColor,
-                BlendMode.srcIn,
-              ),
+            activeIcon: Icon(
+              Icons.favorite,
+              color: kPrimaryColor,
             ),
             label: "Fav",
           ),
           BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              "assets/icons/User Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                inActiveIconColor,
-                BlendMode.srcIn,
-              ),
+            icon: Icon(
+              Icons.search_outlined,
+              color: inActiveIconColor,
             ),
-            activeIcon: SvgPicture.asset(
-              "assets/icons/User Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                kPrimaryColor,
-                BlendMode.srcIn,
-              ),
+            activeIcon: Icon(
+              Icons.search,
+              color: kPrimaryColor,
             ),
-            label: "Fav",
+            label: "Search",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person_outline,
+              color: inActiveIconColor,
+            ),
+            activeIcon: Icon(
+              Icons.person,
+              color: kPrimaryColor,
+            ),
+            label: "Profile",
           ),
         ],
       ),

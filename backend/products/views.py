@@ -13,9 +13,12 @@ class ProductsAddListView(ListAPIView):
     permission_classes = [IsAuthenticated,IsClient]
     serializer_class = ProductSerializer
     def get_queryset(self):
+        query = self.request.GET.get("query")
         order_by = self.request.GET.get("order_by")
         if order_by=="new":
             return Product.objects.all().order_by("-created_at")
+        if query is not None:
+            return Product.objects.filter(name__icontains=query)
         return Product.objects.all()
 class LikedProductsListView(ListAPIView):
     queryset = Product.objects.all()

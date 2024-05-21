@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/screens/search/search_screen.dart';
+import 'package:shop_app/services/cart_servies.dart';
 import '../../cart/cart_screen.dart';
 import 'icon_btn_with_counter.dart';
 import 'search_field.dart';
-import 'package:shop_app/services/cart_servies.dart';
 
 class HomeHeader extends StatefulWidget {
   const HomeHeader({
@@ -17,6 +18,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   int numOfItems = 0;
   final CartService _cartService =
       CartService(); // Create a single instance of CartService
+  String searchQuery = "";
 
   @override
   void initState() {
@@ -37,6 +39,15 @@ class _HomeHeaderState extends State<HomeHeader> {
     });
   }
 
+  void _navigateToSearchScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -44,7 +55,9 @@ class _HomeHeaderState extends State<HomeHeader> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: SearchField()),
+          Expanded(
+            child: SizedBox(),
+          ),
           SizedBox(width: 16),
           IconBtnWithCounter(
             svgSrc: "assets/icons/Cart Icon.svg",
