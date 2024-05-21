@@ -11,9 +11,6 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Sign In"),
-      ),
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
@@ -22,7 +19,7 @@ class SignInScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 36),
                   const Text(
                     "Welcome Back",
                     style: TextStyle(

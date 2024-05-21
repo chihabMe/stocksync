@@ -50,10 +50,16 @@ class ProfileScreen extends StatelessWidget {
                     press: () {},
                   ),
                   ProfileMenu(
-                    text: "Help Center",
-                    icon: "assets/icons/Question mark.svg",
-                    press: () {},
-                  ),
+                      text: "Logout",
+                      icon: "assets/icons/Log out.svg",
+                      press: () async {
+                        await authServices.logout();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignInScreen()),
+                        );
+                      })
                 ],
               );
             }
