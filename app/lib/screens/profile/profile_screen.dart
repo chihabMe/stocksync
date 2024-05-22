@@ -30,13 +30,14 @@ class ProfileScreen extends StatelessWidget {
               return Center(child: Text('No User found'));
             } else {
               String email = snapshot.data!.email;
+              String userType = snapshot.data!.userType.name;
               return Column(
                 children: [
                   SizedBox(height: 35),
                   ProfilePic(user: snapshot.data!),
                   const SizedBox(height: 20),
                   ProfileMenu(
-                    text: "$email",
+                    text: "$email ($userType)",
                     icon: Icons.person,
                     press: () => {},
                   ),

@@ -29,14 +29,14 @@ class _NewProductsState extends State<NewProducts> {
           if (product.id == productId) {
             // Create a new Product object with updated isLiked
             return Product(
-              id: product.id,
-              name: product.name,
-              description: product.description,
-              images: product.images,
-              rating: product.rating,
-              price: product.price,
-              isLiked: isLiked,
-            );
+                id: product.id,
+                name: product.name,
+                description: product.description,
+                images: product.images,
+                rating: product.rating,
+                price: product.price,
+                isLiked: isLiked,
+                stock: 1);
           }
           return product;
         }).toList();

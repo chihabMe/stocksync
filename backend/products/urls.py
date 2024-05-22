@@ -7,11 +7,15 @@ from .views import (ProductsAddListView,
                         ProductCategoryListView,
                         LikeProductView,
                         LikedProductsListView,
-                        ProductClientDetailsView
+                        ProductClientDetailsView,
+                        ProductSellerListCreateView,
+                        ProductSellerDestroyUpdateView
                      )
 
 urlpatterns = [
     path('', ProductsAddListView.as_view(), name='product-list'),
+    path('seller/', ProductSellerListCreateView.as_view(), name='seller-product-list'),
+    path('<str:id>/seller/', ProductSellerDestroyUpdateView.as_view(), name='seller-product'),
     path('liked/', LikedProductsListView.as_view(), name='liked-products-view'),
     path('<str:id>/like/', LikeProductView.as_view(), name='like-product-view'),
     path('<str:id>/', ProductClientDetailsView.as_view(), name='product-details'),

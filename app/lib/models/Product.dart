@@ -7,9 +7,11 @@ class Product {
   final List<String> images; // Change type to ProductImage
   final double rating, price;
   final bool isLiked;
+  final int stock;
 
   Product({
     required this.id,
+    required this.stock,
     required this.images,
     this.rating = 0.0,
     this.isLiked = false,
@@ -19,23 +21,26 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    print("---------proudct-------------");
+    print(json);
+    print("----------------------");
     try {
       print("Parsing JSON data for Product: $json");
       // Convert the list of dynamic to a list of strings
-      List<dynamic> images = json['images'];
+      List<dynamic> images = json['image_urls'];
       List<String> imageUrls = images.map((image) => image.toString()).toList();
 
       return Product(
         id: json['id'],
         name: json['name'],
+        stock: json['stock'],
         description: json['description'],
         images: imageUrls, // Assign the list of strings to the images field
         rating: json['rating'].toDouble(),
         price: double.parse(json['price'].toString()),
-        isLiked: json['is_liked'],
+        isLiked: json['is_liked'] ?? false,
       );
     } catch (e) {
-      print("Product model parsing Product JSON: $e");
       rethrow;
     }
   }
@@ -46,6 +51,7 @@ class Product {
       'name': name,
       'description': description,
       'images': images,
+      'stock': stock,
       'rating': rating,
       'price': price,
       'is_liked': isLiked,
@@ -53,7 +59,52 @@ class Product {
   }
 }
 
-const String description =
-    "Wireless Controller for PS4™ gives you what you want in your gaming from over precision control your games to sharing …";
+class NewProduct {
+  final String name;
+  final String description;
+  final double price;
+  final int stock;
+  final List<String> images; // List of image URLs or paths
+  final String category; // New field for category
 
-List<Product> demoProducts = [];
+  NewProduct({
+    required this.name,
+    required this.price,
+    required this.stock,
+    required this.images,
+    required this.category,
+    required this.description,
+  });
+
+  factory NewProduct.fromJson(Map<String, dynamic> json) {
+    try {
+      print("Parsing JSON data for NewProduct: $json");
+      // Convert the list of dynamic to a list of strings
+      List<dynamic> images = json['images'];
+      List<String> imageUrls = images.map((image) => image.toString()).toList();
+
+      return NewProduct(
+        name: json['name'],
+        price: double.parse(json['price'].toString()),
+        stock: json['stock'],
+        images: imageUrls,
+        category: json['category'],
+        description: json['description'],
+      );
+    } catch (e) {
+      print("Error parsing NewProduct JSON: $e");
+      rethrow;
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'price': price,
+      'stock': stock,
+      'images': images,
+      'category': category,
+      'description': description,
+    };
+  }
+}

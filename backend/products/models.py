@@ -13,6 +13,7 @@ User = get_user_model()
 class ProductCategory(BaseModel):
     name = models.CharField(max_length=100,unique=True)
     slug = models.SlugField(max_length=120, unique=True,blank=True)
+    user = models.ForeignKey(User,related_name='created_categories',on_delete=models.CASCADE)
     parent = models.ForeignKey("self",null=True,blank=True,on_delete=models.CASCADE,related_name='children')
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -23,6 +24,7 @@ class ProductCategory(BaseModel):
     
 class Product(BaseModel):
     name = models.CharField(max_length=300)
+    user = models.ForeignKey(User,related_name='products',on_delete=models.CASCADE)
     slug = models.CharField(max_length=350,blank=True,unique=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=10,decimal_places=2)

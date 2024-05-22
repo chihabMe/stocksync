@@ -4,6 +4,8 @@ import 'package:shop_app/screens/checkout/checkout_screen.dart';
 import 'package:shop_app/screens/checkout/order_success_screen.dart';
 import 'package:shop_app/screens/products/products_screen.dart';
 import 'package:shop_app/screens/profile/profile_orders_screen.dart';
+import 'package:shop_app/screens/seller/init_seller_screen.dart';
+import 'package:shop_app/screens/seller/seller_add_product_screen.dart';
 
 import 'screens/cart/cart_screen.dart';
 import 'screens/complete_profile/complete_profile_screen.dart';
@@ -22,6 +24,7 @@ import 'screens/splash/splash_screen.dart';
 // All our routes will be available here
 final Map<String, WidgetBuilder> routes = {
   InitScreen.routeName: (context) => const InitScreen(),
+  InitSellerScreen.routeName: (context) => InitSellerScreen(),
   SplashScreen.routeName: (context) => const SplashScreen(),
   SignInScreen.routeName: (context) => const SignInScreen(),
   ForgotPasswordScreen.routeName: (context) => const ForgotPasswordScreen(),
@@ -37,5 +40,6 @@ final Map<String, WidgetBuilder> routes = {
   ProfileScreen.routeName: (context) => ProfileScreen(),
   CheckoutScreen.routeName: (context) => CheckoutScreen(),
   OrderSuccessScreen.routeName: (context) => OrderSuccessScreen(),
-  ProfileOrdersScreen.routeName: (context) => ProfileOrdersScreen()
+  ProfileOrdersScreen.routeName: (context) => ProfileOrdersScreen(),
+  SellerAddProductScreen.routeName: (context) => SellerAddProductScreen()
 };

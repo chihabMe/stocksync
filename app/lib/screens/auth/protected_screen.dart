@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/screens/init_screen.dart';
+import 'package:shop_app/screens/seller/init_seller_screen.dart';
 import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
 import 'package:shop_app/screens/home/home_screen.dart';
 import 'package:shop_app/services/auth_servies.dart';
@@ -27,14 +28,23 @@ class _ProtectedScreenState extends State<ProtectedScreen> {
   Future<void> _checkUserStatus() async {
     try {
       var user = await _userServices.getUser();
+      print("-------------");
       if (!_isNavigating) {
         setState(() {
           _isLoading = false;
         });
+        print("-------------");
+        print(user);
         if (user == null) {
           _navigateToSignInScreen();
         } else {
-          _navigateToHomeScreen();
+          print(user.userType.name);
+          print("-------------");
+          if (user.userType.name == "client") {
+            _navigateToHomeScreen();
+          } else {
+            _navigateToSellerHome();
+          }
         }
       }
     } catch (error) {
@@ -52,6 +62,11 @@ class _ProtectedScreenState extends State<ProtectedScreen> {
   void _navigateToHomeScreen() {
     _isNavigating = true;
     Navigator.pushReplacementNamed(context, InitScreen.routeName);
+  }
+
+  void _navigateToSellerHome() {
+    _isNavigating = true;
+    Navigator.pushReplacementNamed(context, InitSellerScreen.routeName);
   }
 
   @override

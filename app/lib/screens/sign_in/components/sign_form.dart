@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/screens/auth/protected_screen.dart';
 import 'package:shop_app/screens/init_screen.dart';
 import 'package:shop_app/services/auth_servies.dart';
 
@@ -52,7 +53,7 @@ class _SignFormState extends State<SignForm> {
       try {
         bool success = await authServices.login(email, password);
         if (success) {
-          Navigator.pushNamed(context, InitScreen.routeName);
+          Navigator.pushNamed(context, ProtectedScreen.routeName);
         } else {
           addError(error: "Login failed. Please check your credentials.");
         }

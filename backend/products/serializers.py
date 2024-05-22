@@ -43,6 +43,73 @@ class ProductSerializer(serializers.ModelSerializer):
         image_urls = [absolute_base_url + image.image.url for image in obj.images.all()]
         return image_urls
 
+
+from rest_framework import serializers
+from django.core.files.base import ContentFile
+from .models import Product, ProductCategory, ProductImage
+import random
+
+class SellerProductSerializer(serializers.ModelSerializer):
+    rating = serializers.SerializerMethodField('get_rating', read_only=True)
+    images = serializers.ListField(
+        child=serializers.ImageField(max_length=None, use_url=True),
+        write_only=True
+    )
+    image_urls = serializers.SerializerMethodField('get_image_urls', read_only=True)
+    category = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'category', 'images', 'image_urls', 'rating', 'price', 'description', 'stock']
+
+    def validate_category(self, value):
+        try:
+            ProductCategory.objects.get(name=value)
+        except ProductCategory.DoesNotExist:
+            raise serializers.ValidationError("Invalid category name")
+        return value
+
+    def get_rating(self, obj):
+        return random.choice([1, 2, 3, 4, 5])
+
+    def get_image_urls(self, obj):
+        request = self.context.get('request')
+        absolute_base_url = request.build_absolute_uri('/')[:-1]  # Remove the trailing slash
+        image_urls = [absolute_base_url + image.image.url for image in obj.images.all()]
+        return image_urls
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        category_name = validated_data.pop('category')
+        category = ProductCategory.objects.get(name=category_name)
+        images_data = validated_data.pop('images')
+
+        product = Product.objects.create(user=user, category=category, **validated_data)
+        
+        for image_data in images_data:
+            product_image = ProductImage(product=product, image=image_data)
+            product_image.save()
+        
+        return product
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.price = validated_data.get('price', instance.price)
+        instance.stock = validated_data.get('stock', instance.stock)
+        category_name = validated_data.get('category', instance.category.name)
+        instance.category = ProductCategory.objects.get(name=category_name)
+        
+        images_data = validated_data.pop('images', None)
+        if images_data is not None:
+            instance.images.all().delete()  # Clear existing images
+            for image_data in images_data:
+                product_image = ProductImage(product=instance, image=image_data)
+                product_image.save()
+        
+        instance.save()
+        return instance
+
 class ProductCategoryManagerSerializer(serializers.ModelSerializer):  # Inheriting directly from serializers.ModelSerializer
 
     class Meta:

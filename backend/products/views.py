@@ -1,7 +1,7 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView,RetrieveUpdateDestroyAPIView,GenericAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView,RetrieveUpdateDestroyAPIView,GenericAPIView,UpdateAPIView,DestroyAPIView
 from .models import Product,ProductCategory
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .serializers import  ProductSerializer,ProductCategoryManagerSerializer,ProductCategorySerializer
+from .serializers import  ProductSerializer,ProductCategoryManagerSerializer,ProductCategorySerializer,SellerProductSerializer
 from common.permissions    import IsAdmin,IsSeller,IsClient
 from rest_framework.response import Response
 
@@ -55,6 +55,18 @@ class ProductCategoryListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductCategorySerializer
 
+
+## views for the seller 
+class ProductSellerListCreateView(ListCreateAPIView):
+    serializer_class = SellerProductSerializer
+    permission_classes = [IsAuthenticated,IsSeller]
+    def get_queryset(self):
+        user = self.request.user
+        return Product.objects.filter(user=user)
+class ProductSellerDestroyUpdateView(DestroyAPIView,UpdateAPIView):
+    serializer_class = SellerProductSerializer
+    permission_classes = [IsAuthenticated,IsSeller]
+    lookup_field = "id"
 ## views for the admin user 
 class ProductCategoryListCreateManagerView(ListCreateAPIView):
     queryset = ProductCategory.objects.all()

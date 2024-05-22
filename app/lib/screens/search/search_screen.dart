@@ -35,14 +35,14 @@ class _SearchScreenState extends State<SearchScreen> {
         return products.map((product) {
           if (product.id == productId) {
             return Product(
-              id: product.id,
-              name: product.name,
-              description: product.description,
-              images: product.images,
-              rating: product.rating,
-              price: product.price,
-              isLiked: isLiked,
-            );
+                id: product.id,
+                name: product.name,
+                description: product.description,
+                images: product.images,
+                rating: product.rating,
+                price: product.price,
+                isLiked: isLiked,
+                stock: 1);
           }
           return product;
         }).toList();

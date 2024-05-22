@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shop_app/endpoints.dart';
 
 import 'package:shop_app/models/Product.dart';
@@ -88,6 +87,58 @@ class ProductService {
     } catch (error) {
       print("Error accursed : $error ");
       rethrow; // Re-throws the caught error for higher-level handling
+    }
+  }
+
+  Future<List<Product>> getSellerProducts() async {
+    try {
+      final response = await dio.get(sellerProductsEndpoint);
+      ListResponse<Product> listResponse =
+          ListResponse.fromJson(response.data, Product.fromJson);
+      List<Product> products = listResponse.results;
+      return products;
+    } catch (error) {
+      print("Error accursed : $error ");
+      rethrow; // Re-throws the caught error for higher-level handling
+    }
+  }
+
+  Future<bool> addProduct(NewProduct product, List<XFile> images) async {
+    try {
+      FormData formData = FormData.fromMap({
+        "name": product.name,
+        "description": product.description,
+        "price": product.price,
+        "stock": product.stock,
+        "category": product.category,
+        "images": await Future.wait(images.map((image) async {
+          return await MultipartFile.fromFile(image.path, filename: image.name);
+        }))
+      });
+
+      final response = await dio.post(sellerProductsEndpoint, data: formData);
+
+      // Check if response is successful
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      // Print detailed error information including the response body
+      if (error is DioError && error.response != null) {
+        print("--------------");
+        print("Error occurred: ${error.message}");
+        print("Response data: ${error.response!.data}");
+        print("--------------");
+      } else {
+        print("--------------");
+        print("Error occurred: $error");
+        print("--------------");
+      }
+
+      // Rethrow the error to propagate it upwards
+      rethrow;
     }
   }
 }
