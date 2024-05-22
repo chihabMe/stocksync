@@ -15,13 +15,13 @@ class Order(BaseModel):
     user = models.ForeignKey(User,related_name="orders",on_delete=models.CASCADE)
     status = models.CharField(max_length=10,default=OrderStatusChoices.PENDING,choices=OrderStatusChoices.choices)
 
-    first_name = models.CharField(default="",max_length=250)
-    last_name = models.CharField(default="",max_length=250)
-    phone = models.CharField(default="",max_length=350)
-    address =  models.CharField(default="",max_length=350)
-    state = models.CharField(default="",max_length=250)
-    city = models.CharField(default="",max_length=250)
-    zip_code = models.CharField(default="",max_length=20)
+    first_name = models.CharField(max_length=250,blank=False)
+    last_name = models.CharField(max_length=250,blank=False)
+    phone = models.CharField(max_length=350,blank=False)
+    address =  models.CharField(max_length=350,blank=False)
+    state = models.CharField(max_length=250,blank=False)
+    city = models.CharField(max_length=250,blank=False)
+    zip_code = models.CharField(max_length=20,blank=False)
 
     def __str__(self):
         return "order:"+str(self.user)
