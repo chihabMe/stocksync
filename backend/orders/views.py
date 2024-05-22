@@ -28,6 +28,8 @@ class OrderClientCancelView(UpdateAPIView):
 
     def put(self,request,*args,**kwargs):
         instance = self.get_object()
+        if instance.status != Order.OrderStatusChoices.PENDING:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         instance.status = Order.OrderStatusChoices.CANCELED
         instance.save()
         return Response(status=status.HTTP_201_CREATED)

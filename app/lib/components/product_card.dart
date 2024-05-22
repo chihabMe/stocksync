@@ -9,7 +9,7 @@ class ProductCard extends StatefulWidget {
   final ProductService productService;
   const ProductCard(
       {Key? key,
-      this.width = 150,
+      this.width = 180,
       this.aspectRetio = 1.04,
       required this.product,
       required this.onPress,
