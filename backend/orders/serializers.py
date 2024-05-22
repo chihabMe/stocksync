@@ -18,7 +18,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ["user","first_name","last_name","address","phone","city","status","state", "items"]
+        fields = ["user","first_name","zip_code","last_name","address","phone","city","status","state", "items"]
 
     def validate(self, attrs):
         items_data = attrs.get('items', [])

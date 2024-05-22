@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shop_app/screens/checkout/checkout_screen.dart';
 
 import '../../../constants.dart';
 
@@ -79,7 +80,9 @@ class CheckoutCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, CheckoutScreen.routeName);
+                    },
                     child: const Text("Check Out"),
                   ),
                 ),

@@ -6,3 +6,4 @@ const String userEndpoint = api + "auth/me/";
 const String refreshEndpoint = api + "auth/token/refresh/";
 const String logoutEndpoint = api + "auth/token/logout/";
 const String signupEndpoint = api + "accounts/register/";
+const String orderEndpoint = api + "orders/";

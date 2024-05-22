@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:shop_app/screens/auth/protected_screen.dart';
+import 'package:shop_app/screens/checkout/checkout_screen.dart';
+import 'package:shop_app/screens/checkout/order_success_screen.dart';
 import 'package:shop_app/screens/products/products_screen.dart';
 
 import 'screens/cart/cart_screen.dart';
@@ -32,4 +34,7 @@ final Map<String, WidgetBuilder> routes = {
   DetailsScreen.routeName: (context) => DetailsScreen(),
   CartScreen.routeName: (context) => CartScreen(),
   ProfileScreen.routeName: (context) => ProfileScreen(),
+  CheckoutScreen.routeName: (context) => CheckoutScreen(),
+
+  OrderSuccessScreen.routeName: (context) => OrderSuccessScreen(),
 };
