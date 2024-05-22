@@ -3,12 +3,13 @@ import 'package:shop_app/screens/auth/protected_screen.dart';
 import 'package:shop_app/screens/checkout/checkout_screen.dart';
 import 'package:shop_app/screens/checkout/order_success_screen.dart';
 import 'package:shop_app/screens/products/products_screen.dart';
+import 'package:shop_app/screens/profile/profile_orders_screen.dart';
 
 import 'screens/cart/cart_screen.dart';
 import 'screens/complete_profile/complete_profile_screen.dart';
 import 'screens/details/details_screen.dart';
 import 'screens/forgot_password/forgot_password_screen.dart';
-import 'screens/home/home_screen.dart';
+// import 'screens/home/home_screen.dart';
 import 'screens/init_screen.dart';
 import 'screens/login_success/login_success_screen.dart';
 import 'screens/otp/otp_screen.dart';
@@ -35,6 +36,6 @@ final Map<String, WidgetBuilder> routes = {
   CartScreen.routeName: (context) => CartScreen(),
   ProfileScreen.routeName: (context) => ProfileScreen(),
   CheckoutScreen.routeName: (context) => CheckoutScreen(),
-
   OrderSuccessScreen.routeName: (context) => OrderSuccessScreen(),
+  ProfileOrdersScreen.routeName: (context) => ProfileOrdersScreen()
 };

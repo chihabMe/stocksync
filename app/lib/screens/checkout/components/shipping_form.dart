@@ -5,7 +5,6 @@ import 'package:shop_app/models/CartItem.dart';
 import 'package:shop_app/screens/checkout/order_success_screen.dart';
 import 'package:shop_app/services/cart_servies.dart';
 import 'package:shop_app/services/order_servies.dart';
-import 'dart:convert';
 
 class ShippingInfoForm extends StatefulWidget {
   const ShippingInfoForm({Key? key}) : super(key: key);
@@ -65,7 +64,7 @@ class _ShippingInfoFormState extends State<ShippingInfoForm> {
       };
 
       // Call the OrderService to handle the order submission
-      bool success = await OrderService().submitOrder(orderData);
+      bool success = await OrderServices().submitOrder(orderData);
       if (success) {
         // Navigate to a success screen or show a success message
         await CartService().clearCart();
