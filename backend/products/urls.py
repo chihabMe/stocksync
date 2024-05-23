@@ -25,6 +25,6 @@ urlpatterns = [
     path('liked/', LikedProductsListView.as_view(), name='liked-products-view'),
     path('<str:id>/seller/', ProductSellerDestroyUpdateView.as_view(), name='seller-product'),
     path('<str:id>/like/', LikeProductView.as_view(), name='like-product-view'),
-    path('<str:id>/seller/', ProductCreateUpdateDestroyView.as_view(), name='product-seller-details'),
     path('<str:id>/', ProductClientDetailsView.as_view(), name='product-details'),
+    path('<str:id>/seller/', ProductCreateUpdateDestroyView.as_view(), name='product-seller-details'),
 ]

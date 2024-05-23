@@ -197,4 +197,54 @@ class ProductService {
       rethrow;
     }
   }
+
+  Future<bool> deleteProduct(String productId) async {
+    try {
+      final response = await dio.delete('$productEndpoint$productId/seller/');
+
+      return response.statusCode == 204;
+    } catch (error) {
+      print("Error occurred: $error");
+      rethrow;
+    }
+  }
+
+  Future<bool> updateProduct(
+      String productId, NewProduct product, List<XFile> images) async {
+    try {
+      FormData formData = FormData.fromMap({
+        "name": product.name,
+        "description": product.description,
+        "price": product.price,
+        "stock": product.stock,
+        "category": product.category,
+        "images": await Future.wait(images.map((image) async {
+          return await MultipartFile.fromFile(image.path, filename: image.name);
+        }))
+      });
+
+      final response =
+          await dio.put('$productEndpoint$productId/seller/', data: formData);
+
+      // Check if response is successful
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      // Print detailed error information including the response body
+      print("===================");
+      if (error is DioError && error.response != null) {
+        print("Error occurred: ${error.message}");
+        print("Response data: ${error.response!.data}");
+        print("===================");
+      } else {
+        print("Error occurred: $error");
+      }
+
+      // Rethrow the error to propagate it upwards
+      rethrow;
+    }
+  }
 }

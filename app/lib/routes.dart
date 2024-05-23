@@ -6,6 +6,7 @@ import 'package:shop_app/screens/products/products_screen.dart';
 import 'package:shop_app/screens/profile/profile_orders_screen.dart';
 import 'package:shop_app/screens/seller/init_seller_screen.dart';
 import 'package:shop_app/screens/seller/seller_add_product_screen.dart';
+import 'package:shop_app/screens/seller/seller_update_product_screen.dart';
 
 import 'screens/cart/cart_screen.dart';
 import 'screens/complete_profile/complete_profile_screen.dart';
@@ -41,5 +42,6 @@ final Map<String, WidgetBuilder> routes = {
   CheckoutScreen.routeName: (context) => CheckoutScreen(),
   OrderSuccessScreen.routeName: (context) => OrderSuccessScreen(),
   ProfileOrdersScreen.routeName: (context) => ProfileOrdersScreen(),
-  SellerAddProductScreen.routeName: (context) => SellerAddProductScreen()
+  SellerAddProductScreen.routeName: (context) => SellerAddProductScreen(),
+  // SellerUpdateProductScreen.routeName: (context) => const SellerUpdateProductScreen(),
 };

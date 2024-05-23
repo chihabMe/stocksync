@@ -60,6 +60,7 @@ class ProductCategoryListView(ListAPIView):
 
 ## views for the seller 
 class ProductSellerListCreateView(ListCreateAPIView):
+    
     serializer_class = SellerProductSerializer
     permission_classes = [IsAuthenticated,IsSeller]
     def get_queryset(self):
@@ -69,6 +70,22 @@ class ProductSellerDestroyUpdateView(DestroyAPIView,UpdateAPIView):
     serializer_class = SellerProductSerializer
     permission_classes = [IsAuthenticated,IsSeller]
     lookup_field = "id"
+
+    def update(self, request, *args, **kwargs):
+        print(request.body)
+        return super().update(request, *args, **kwargs)
+    def check_object_permissions(self, request, obj):
+        return request.user == obj.user
+    def get_queryset(self):
+        user = self.request.user
+        return Product.objects.filter(user=user)
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CouponsSellerListCreateView(ListCreateAPIView):
     serializer_class = ProductCouponManagerSerializer
@@ -103,6 +120,6 @@ class ProductCategoryListCreateManagerView(ListCreateAPIView):
 
 class ProductCategoryUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     queryset = ProductCategory.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny,IsSeller]
     lookup_field = 'id'
     serializer_class = ProductCategoryManagerSerializer

@@ -57,7 +57,8 @@ class SellerProductSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField('get_rating', read_only=True)
     images = serializers.ListField(
         child=serializers.ImageField(max_length=None, use_url=True),
-        write_only=True
+        write_only=True,
+        required=False
     )
     image_urls = serializers.SerializerMethodField('get_image_urls', read_only=True)
     category = serializers.CharField(write_only=True)
