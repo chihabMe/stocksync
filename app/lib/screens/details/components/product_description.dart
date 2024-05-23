@@ -112,20 +112,6 @@ class _ProductDescriptionState extends State<ProductDescription> {
                   maxLines: 3,
                 ),
               ),
-              if (widget.pressOnSeeMore != null)
-                GestureDetector(
-                  onTap: widget.pressOnSeeMore,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      "See More Detail",
-                      style: TextStyle(
-                        color: kPrimaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
             ],
           );
         } else {

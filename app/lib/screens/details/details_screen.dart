@@ -90,9 +90,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Text(
-                      "4.7",
-                      style: TextStyle(
+                    Text(
+                      product.rating.toString(),
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -126,7 +126,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   color: const Color(0xFFF6F7F9),
                   child: Column(
                     children: [
-                      ColorDots(product: product),
                       SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

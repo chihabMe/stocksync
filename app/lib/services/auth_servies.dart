@@ -25,7 +25,9 @@ class AuthServices {
       }
       return false;
     } catch (error) {
+      print("================");
       print("Error occurred: $error");
+      print("================");
       rethrow;
     }
   }

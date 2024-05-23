@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import the clipboard services
 import 'package:shop_app/models/Product.dart';
 import 'package:shop_app/screens/seller/seller_add_product_screen.dart';
-import 'package:shop_app/services/product_servies.dart'; // Import your ProductService
+import 'package:shop_app/services/product_servies.dart';
 
 class SellerProductScreen extends StatelessWidget {
   @override
@@ -9,6 +10,9 @@ class SellerProductScreen extends StatelessWidget {
     final productService = ProductService();
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Manage Products'),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -96,6 +100,20 @@ class SellerProductScreen extends StatelessWidget {
                                     icon: Icon(Icons.edit),
                                     onPressed: () {
                                       // Navigate to screen to edit product
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.copy),
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                          ClipboardData(text: product.id));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              'Product ID copied to clipboard'),
+                                        ),
+                                      );
                                     },
                                   ),
                                 ],

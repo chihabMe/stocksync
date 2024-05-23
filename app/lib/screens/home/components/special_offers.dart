@@ -19,6 +19,7 @@ class SpecialOffers extends StatelessWidget {
             press: () {},
           ),
         ),
+        const SizedBox(height: 20),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -68,8 +69,8 @@ class SpecialOfferCard extends StatelessWidget {
       child: GestureDetector(
         onTap: press,
         child: SizedBox(
-          width: 242,
-          height: 100,
+          width: 250,
+          height: 150,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Stack(
@@ -79,24 +80,22 @@ class SpecialOfferCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
                 Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black54,
-                        Colors.black38,
-                        Colors.black26,
+                        Colors.black.withOpacity(0.6),
+                        Colors.black.withOpacity(0.3),
+                        Colors.black.withOpacity(0.1),
                         Colors.transparent,
                       ],
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 10,
-                  ),
+                Positioned(
+                  bottom: 10,
+                  left: 10,
                   child: Text.rich(
                     TextSpan(
                       style: const TextStyle(color: Colors.white),
@@ -104,11 +103,16 @@ class SpecialOfferCard extends StatelessWidget {
                         TextSpan(
                           text: "$category\n",
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        TextSpan(text: "$numOfBrands Brands")
+                        TextSpan(
+                          text: "$numOfBrands Brands",
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                       ],
                     ),
                   ),

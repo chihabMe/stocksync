@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/endpoints.dart';
 import 'package:shop_app/screens/auth/protected_screen.dart';
 import 'package:shop_app/screens/init_screen.dart';
 import 'package:shop_app/services/auth_servies.dart';
@@ -49,6 +50,9 @@ class _SignFormState extends State<SignForm> {
         isLoading = true;
       });
       KeyboardUtil.hideKeyboard(context);
+      print("------login----------");
+      print(loginEndpoint);
+      print("----------------");
 
       try {
         bool success = await authServices.login(email, password);
