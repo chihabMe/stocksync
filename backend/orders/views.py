@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from products.models import Product 
 
+
 # Create your views here.
 
 ##view for the client to get/create/cancels  orders
@@ -57,6 +58,20 @@ class OrderSellerListView(ListAPIView):
 
 
 class OrderSellerUpdateStatus(UpdateAPIView):
-    serializer_class = OrderSellerManagerSerializer
-    permission_classes = [IsAuthenticated,IsSeller]
+    permission_classes = [IsAuthenticated, IsSeller]
     lookup_field = "id"
+    queryset = Order.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        new_status = request.data.get('status', None)
+        
+        # Check if the new status is valid
+        valid_statuses = [Order.OrderStatusChoices.ACCEPTED, Order.OrderStatusChoices.CANCELED, Order.OrderStatusChoices.RECEIVED, Order.OrderStatusChoices.PENDING,Order.OrderStatusChoices.COMPLETED]
+        if new_status not in valid_statuses:
+            return Response({'error': 'Invalid order status'}, status=status.HTTP_400_BAD_REQUEST)
+
+        instance.status = new_status
+        instance.save()
+        
+        return Response(status=status.HTTP_200_OK)

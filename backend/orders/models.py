@@ -13,6 +13,7 @@ class Order(BaseModel):
         ACCEPTED = "accepted"
         RECEIVED = "received"
         CANCELED = "canceled" 
+        COMPLETED = "completed" 
     user = models.ForeignKey(User,related_name="orders",on_delete=models.CASCADE)
     status = models.CharField(max_length=10,default=OrderStatusChoices.PENDING,choices=OrderStatusChoices.choices)
 

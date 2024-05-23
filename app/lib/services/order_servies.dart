@@ -99,8 +99,15 @@ class OrderServices {
         return false;
       }
     } catch (error) {
+      print("===================");
       print("error in updating order status $error");
+      print("===================");
       rethrow;
     }
+  }
+
+  // Add this new method to accept an order
+  Future<bool> acceptOrder(String orderId) async {
+    return await updateOrderStatus(orderId, 'accepted');
   }
 }
