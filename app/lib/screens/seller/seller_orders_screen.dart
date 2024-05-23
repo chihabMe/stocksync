@@ -20,6 +20,17 @@ class _SellerOrderScreenState extends State<SellerOrderScreen> {
     }
   }
 
+  Color _getCardColor(String status) {
+    switch (status) {
+      case 'accepted':
+        return Colors.green[100]!;
+      case 'completed':
+        return Colors.blue[100]!;
+      default:
+        return Colors.white;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,9 +68,11 @@ class _SellerOrderScreenState extends State<SellerOrderScreen> {
                       itemCount: orders.length,
                       itemBuilder: (context, index) {
                         final Order order = orders[index];
+                        Color cardColor = _getCardColor(order.status);
                         return Card(
                           elevation: 4,
                           margin: const EdgeInsets.symmetric(vertical: 10),
+                          color: cardColor, // Set background color here
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [

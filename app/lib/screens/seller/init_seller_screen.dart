@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants.dart';
 import 'package:shop_app/screens/seller/seller_complains_screen.dart';
+import 'package:shop_app/screens/seller/seller_coupons_screen.dart';
 import 'package:shop_app/screens/seller/seller_orders_screen.dart';
 import 'package:shop_app/screens/seller/seller_product_screen.dart';
 import 'package:shop_app/screens/profile/profile_screen.dart';
@@ -27,6 +28,7 @@ class _InitScreenState extends State<InitSellerScreen> {
     SellerProductScreen(), // New: Seller Product Screen
     SellerOrderScreen(), // New: Seller Order Screen
     SellerComplaintsScreen(), // New: Seller Complaints Screen
+    SellerCouponsScreen(),
     ProfileScreen(), // Profile screen remains the same
   ];
 
@@ -72,7 +74,18 @@ class _InitScreenState extends State<InitSellerScreen> {
               Icons.warning_amber,
               color: kPrimaryColor,
             ),
+            label: "Coupons",
+          ),
+          BottomNavigationBarItem(
             label: "Complaints",
+            icon: Icon(
+              Icons.local_offer_outlined, // New: Seller coupons icon
+              color: inActiveIconColor,
+            ),
+            activeIcon: Icon(
+              Icons.local_offer,
+              color: kPrimaryColor,
+            ),
           ),
           BottomNavigationBarItem(
             icon: Icon(

@@ -2,6 +2,10 @@ from rest_framework import serializers
 import random
 from .models import Product, ProductCategory, ProductImage, ProductCoupon
 from django.utils import timezone
+import random
+import string
+from datetime import timedelta
+
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
@@ -128,14 +132,34 @@ class ProductCategoryManagerSerializer(serializers.ModelSerializer):  # Inheriti
         instance.save()
         return instance
 
+
 class ProductCouponManagerSerializer(serializers.ModelSerializer):
-    expired = serializers.SerializerMethodField("get_expired")
+    expired = serializers.SerializerMethodField("get_expired",read_only=True)
+    code = serializers.CharField(read_only=True)
+    expiry_date = serializers.DateTimeField(read_only=True)
+    product_id = serializers.CharField(write_only=True)
+
 
     class Meta:
         model = ProductCoupon
-        fields = ["id", "code", "created_at", 'expired', 'expiry_date']
+        fields = ["id", "code","product_id","discount", "created_at", 'expired', 'expiry_date']
         ref_name = "ProductCouponManager"  # Add a unique ref_name here
 
     def get_expired(self, obj):
         now = timezone.now()
         return obj.expiry_date > now
+
+    def create(self, validated_data):
+        # Generate a random code for the coupon
+        user = self.context["request"].user
+        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        validated_data['code'] = code
+        
+        # Set expiry date 30 days from the created day
+        created_at = validated_data.get('created_at', timezone.now())
+        expiry_date = created_at + timedelta(days=30)
+        validated_data['expiry_date'] = expiry_date
+        
+        product_coupon = ProductCoupon.objects.create(user=user,**validated_data)
+        
+        return product_coupon

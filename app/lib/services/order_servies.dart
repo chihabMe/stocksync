@@ -99,9 +99,7 @@ class OrderServices {
         return false;
       }
     } catch (error) {
-      print("===================");
       print("error in updating order status $error");
-      print("===================");
       rethrow;
     }
   }

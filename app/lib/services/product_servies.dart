@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shop_app/endpoints.dart';
+import 'package:shop_app/models/Coupon.dart';
 
 import 'package:shop_app/models/Product.dart';
 import 'package:shop_app/models/ListResponse.dart';
@@ -127,17 +128,72 @@ class ProductService {
     } catch (error) {
       // Print detailed error information including the response body
       if (error is DioError && error.response != null) {
-        print("--------------");
         print("Error occurred: ${error.message}");
         print("Response data: ${error.response!.data}");
-        print("--------------");
       } else {
-        print("--------------");
         print("Error occurred: $error");
-        print("--------------");
       }
 
       // Rethrow the error to propagate it upwards
+      rethrow;
+    }
+  }
+
+  Future<List<Coupon>> getSellerCoupons() async {
+    try {
+      final response = await dio.get(sellerCouponsEndpoint);
+      ListResponse<Coupon> listResponse =
+          ListResponse.fromJson(response.data, Coupon.fromJson);
+      List<Coupon> coupons = listResponse.results;
+      return coupons;
+    } catch (error) {
+      if (error is DioError) {
+        if (error.response != null) {
+          // Access response data
+          var responseData = error.response?.data;
+          print("================");
+          print("Error occurred: ${error.message}");
+          print("Response data: $responseData");
+          print("================");
+        } else {
+          print("DioError without response");
+        }
+      } else {
+        print("Error occurred: $error");
+      }
+      rethrow;
+    }
+  }
+
+  Future<Coupon> generateSellerCoupon(int discount, String productId) async {
+    try {
+      final response = await dio.post(
+        sellerCouponsEndpoint,
+        data: {
+          "discount": discount.toString(),
+          "product_id": productId,
+        },
+      );
+
+      if (response.statusCode == 201) {
+        Coupon coupon = Coupon.fromJson(response.data);
+        return coupon;
+      } else {
+        throw "Failed to generate coupon. Status code: ${response.statusCode}";
+      }
+    } catch (error) {
+      print("Error occurred: $error");
+      rethrow;
+    }
+  }
+
+  Future<bool> deleteSellerCoupon(String couponId) async {
+    try {
+      final response = await dio.delete('$sellerCouponsEndpoint$couponId/');
+
+      return response.statusCode == 204;
+    } catch (error) {
+      print("Error occurred: $error");
       rethrow;
     }
   }

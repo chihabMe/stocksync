@@ -1,9 +1,11 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView,RetrieveUpdateDestroyAPIView,GenericAPIView,UpdateAPIView,DestroyAPIView
 from .models import Product,ProductCategory
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .serializers import  ProductSerializer,ProductCategoryManagerSerializer,ProductCategorySerializer,SellerProductSerializer
+from .serializers import  ProductSerializer,ProductCategoryManagerSerializer,ProductCategorySerializer,SellerProductSerializer,ProductCouponManagerSerializer
 from common.permissions    import IsAdmin,IsSeller,IsClient
 from rest_framework.response import Response
+from .models import ProductCoupon
+from rest_framework import status
 
 
 
@@ -67,6 +69,32 @@ class ProductSellerDestroyUpdateView(DestroyAPIView,UpdateAPIView):
     serializer_class = SellerProductSerializer
     permission_classes = [IsAuthenticated,IsSeller]
     lookup_field = "id"
+
+class CouponsSellerListCreateView(ListCreateAPIView):
+    serializer_class = ProductCouponManagerSerializer
+    permission_classes = [IsAuthenticated,IsSeller]
+
+    def  get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+    def get_queryset(self):
+        user = self.request.user
+        return ProductCoupon.objects.filter(user=user)
+    
+class CouponsSellerDeleteView(DestroyAPIView):
+    serializer_class = ProductCouponManagerSerializer
+    permission_classes = [IsAuthenticated,IsSeller]
+    lookup_field = "id"
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def get_queryset(self):
+        user = self.request.user
+        return ProductCoupon.objects.filter(user=user)
+
 ## views for the admin user 
 class ProductCategoryListCreateManagerView(ListCreateAPIView):
     queryset = ProductCategory.objects.all()

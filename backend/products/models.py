@@ -49,7 +49,8 @@ class Product(BaseModel):
 class ProductCoupon(BaseModel):
     code = models.CharField(max_length=49, unique=True)
     discount = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(100)])
-    seller = models.ForeignKey(SellerProfile,related_name="generated_coupons",on_delete=models.CASCADE)
+    user = models.ForeignKey(User,related_name="generated_coupons",on_delete=models.CASCADE)
+    # seller = models.ForeignKey(SellerProfile,related_name="generated_coupons",on_delete=models.CASCADE)
     product = models.ForeignKey(Product,related_name="coupons",on_delete=models.CASCADE)
     expiry_date = models.DateTimeField()
 
