@@ -69,4 +69,38 @@ class OrderServices {
       return false; // Return false if an error occurs
     }
   }
+
+  Future<List<Order>> getSellerOrders() async {
+    try {
+      String finalEndpoint = orderEndpoint + "seller/";
+      final response = await dio.get(finalEndpoint);
+
+      if (response.statusCode == 200) {
+        ListResponse<Order> listResponse =
+            ListResponse.fromJson(response.data, Order.fromJson);
+        List<Order> orders = listResponse.results;
+        return orders;
+      } else {
+        // Handle error
+        throw Exception("Failed to fetch seller orders");
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<bool> updateOrderStatus(String orderId, String status) async {
+    try {
+      final response = await dio
+          .put('$orderEndpoint$orderId/seller/', data: {'status': status});
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print("error in updating order status $error");
+      rethrow;
+    }
+  }
 }

@@ -21,13 +21,10 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
-    print("---------proudct-------------");
-    print(json);
-    print("----------------------");
     try {
       print("Parsing JSON data for Product: $json");
       // Convert the list of dynamic to a list of strings
-      List<dynamic> images = json['image_urls'];
+      List<dynamic> images = json['images'] ?? json["image_urls"];
       List<String> imageUrls = images.map((image) => image.toString()).toList();
 
       return Product(
@@ -80,7 +77,7 @@ class NewProduct {
     try {
       print("Parsing JSON data for NewProduct: $json");
       // Convert the list of dynamic to a list of strings
-      List<dynamic> images = json['images'];
+      List<dynamic> images = json['images'] ?? json["image_urls"];
       List<String> imageUrls = images.map((image) => image.toString()).toList();
 
       return NewProduct(

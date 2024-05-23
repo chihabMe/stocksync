@@ -9,3 +9,4 @@ const String signupEndpoint = api + "accounts/register/";
 const String orderEndpoint = api + "orders/";
 const String complainEndpoint = api + "complains/";
 const String sellerProductsEndpoint = api + "products/seller/";
+// const String sellerOrdersEndpoint = api + "orders/seller/";

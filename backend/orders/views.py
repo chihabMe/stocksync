@@ -1,14 +1,14 @@
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView,UpdateAPIView
+from rest_framework.generics import ListCreateAPIView,UpdateAPIView,ListAPIView
 from .models import Order
 from rest_framework.permissions import IsAuthenticated
-from common.permissions import IsClient
-from .serializers import OrderSerializer
+from common.permissions import IsClient,IsSeller
+from .serializers import OrderSerializer,OrderSellerManagerSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from products.models import Product 
 
 # Create your views here.
-
 
 ##view for the client to get/create/cancels  orders
 ##/orders/  (get,post) get = list of orders  post create one order
@@ -41,10 +41,22 @@ class OrderClientCancelView(UpdateAPIView):
         return obj.user == request.user
 
 
+class OrderSellerListView(ListAPIView):
+    serializer_class = OrderSellerManagerSerializer
+    permission_classes = [IsAuthenticated, IsSeller]
+    
+    def get_queryset(self):
+        user = self.request.user
+        # Assuming the seller is associated with the product via a `seller` field
+        # Fetch all products belonging to the current seller
+        seller_products = Product.objects.filter(user=user)
+        # Get all orders that include these products
+        orders = Order.objects.filter(items__product__in=seller_products).distinct()
+        return orders
 
-class OrderClientDestroy():
-    pass
 
-##/order/<id>/ (get order detials, delete, update)
 
-## view for the seller to manage the received orders
+class OrderSellerUpdateStatus(UpdateAPIView):
+    serializer_class = OrderSellerManagerSerializer
+    permission_classes = [IsAuthenticated,IsSeller]
+    lookup_field = "id"
