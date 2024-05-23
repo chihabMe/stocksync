@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/User.dart';
+import 'package:shop_app/screens/auth/protected_screen.dart';
 import 'package:shop_app/screens/profile/profile_orders_screen.dart';
 import 'package:shop_app/screens/sign_in/sign_in_screen.dart';
 import 'package:shop_app/services/auth_servies.dart';
@@ -11,15 +12,15 @@ import 'components/profile_pic.dart';
 class ProfileScreen extends StatelessWidget {
   static String routeName = "/profile";
 
-  AuthServices authServices = AuthServices();
-  UserServices userServices = UserServices();
+  final AuthServices authServices = AuthServices();
+  final UserServices userServices = UserServices();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
-        child: FutureBuilder(
+        child: FutureBuilder<User?>(
           future: userServices.getUser(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -67,12 +68,75 @@ class ProfileScreen extends StatelessWidget {
                       );
                     },
                   ),
+                  ProfileMenu(
+                    text: "Delete Profile",
+                    icon: Icons.delete,
+                    press: () async {
+                      _showDeleteProfileDialog(context, snapshot.data!);
+                    },
+                  ),
                 ],
               );
             }
           },
         ),
       ),
+    );
+  }
+
+  void _showDeleteProfileDialog(BuildContext context, User user) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController passwordController = TextEditingController();
+
+        return AlertDialog(
+          title: Text('Delete Profile'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('enter your password to confirm:'),
+              SizedBox(height: 20),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                String password = passwordController.text;
+                if (password.isNotEmpty) {
+                  bool success = await userServices.deleteUser(password);
+                  print("=------------");
+                  print(success);
+                  if (success) {
+                    Navigator.pushNamed(context, ProtectedScreen.routeName);
+                    await authServices.logout();
+                  } else {
+                    // Show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content:
+                              Text('Failed to delete user. Please try again.')),
+                    );
+                  }
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

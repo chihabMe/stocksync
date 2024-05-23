@@ -4,9 +4,8 @@ import 'package:shop_app/models/User.dart';
 import 'package:shop_app/screens/utils/dio_client.dart';
 
 class UserServices {
+  Dio dio = DioClient().dio;
   Future<User?> getUser() async {
-    Dio dio = DioClient().dio;
-
     try {
       final response = await dio.get(
         userEndpoint,
@@ -22,6 +21,19 @@ class UserServices {
     } catch (error) {
       print("Error occurred: $error");
       rethrow;
+    }
+  }
+
+  Future<bool> deleteUser(String password) async {
+    try {
+      final response = await dio.delete(
+        userEndpoint,
+        data: {'password': password},
+      );
+      return response.statusCode == 204;
+    } catch (error) {
+      print("Error occurred: $error");
+      return false;
     }
   }
 }

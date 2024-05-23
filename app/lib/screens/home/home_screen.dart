@@ -22,10 +22,10 @@ class HomeScreen extends StatelessWidget {
             children: [
               HomeHeader(),
               Categories(),
-              SpecialOffers(),
-              SizedBox(height: 20),
               // ProductListGrid(),
+              SizedBox(height: 20),
               NewProducts(),
+              SpecialOffers(),
               // Here
               SizedBox(height: 20),
             ],

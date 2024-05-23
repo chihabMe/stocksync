@@ -74,7 +74,7 @@ class _ProductCardState extends State<ProductCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "\$${widget.product.price}",
+                  "${widget.product.price} DA",
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -86,8 +86,8 @@ class _ProductCardState extends State<ProductCard> {
                   onTap: handleLike,
                   child: Container(
                     padding: const EdgeInsets.all(6),
-                    height: 24,
-                    width: 24,
+                    height: 30,
+                    width: 30,
                     decoration: BoxDecoration(
                       color: isLiked
                           ? kPrimaryColor.withOpacity(0.15)

@@ -26,6 +26,9 @@ class _ProtectedScreenState extends State<ProtectedScreen> {
   }
 
   Future<void> _checkUserStatus() async {
+    // print("-------------");
+    // await _authServies.logout();
+    // print("-------------");
     try {
       var user = await _userServices.getUser();
       print("-------------");
