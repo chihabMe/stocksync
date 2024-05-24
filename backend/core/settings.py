@@ -200,4 +200,5 @@ APPEND_SLASH=False
 
 CORS_ALLOWED_ORIGINS = [
     os.environ.get("WEB_CLIENT_HOST"),
+    "http://localhost:45139",
 ]

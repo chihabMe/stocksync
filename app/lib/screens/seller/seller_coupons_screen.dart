@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shop_app/models/Coupon.dart';
 import 'package:shop_app/services/product_servies.dart';
+import 'dart:ui' as ui show Clipboard;
 
 class SellerCouponsScreen extends StatefulWidget {
   @override
@@ -41,6 +43,12 @@ class _SellerCouponsScreenState extends State<SellerCouponsScreen> {
                     children: [
                       Icon(
                         coupon.expired ? Icons.data_exploration : Icons.check,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.copy),
+                        onPressed: () {
+                          _copyToClipboard(coupon.code);
+                        },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete, color: Colors.red),
@@ -136,6 +144,13 @@ class _SellerCouponsScreenState extends State<SellerCouponsScreen> {
         );
       }
     });
+  }
+
+  void _copyToClipboard(String code) {
+    Clipboard.setData(ClipboardData(text: code));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Coupon code copied to clipboard')),
+    );
   }
 
   @override

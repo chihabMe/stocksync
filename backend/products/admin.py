@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Product, ProductCategory, ProductImage
+from .models import Product, ProductCategory, ProductImage,ProductCoupon
 
+class ProductCouponAdmin(admin.ModelAdmin):
+    list_display = ["code","discount","user"]
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage  # Use the ProductImage model
@@ -21,3 +23,4 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductCategory, ProductCategoryAdmin)
 admin.site.register(ProductImage)
+admin.site.register(ProductCoupon,ProductCouponAdmin)

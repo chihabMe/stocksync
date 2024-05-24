@@ -164,3 +164,18 @@ class ProductCouponManagerSerializer(serializers.ModelSerializer):
         product_coupon = ProductCoupon.objects.create(user=user,**validated_data)
         
         return product_coupon
+
+
+class CouponSerializer(serializers.Serializer):
+    coupon_code = serializers.CharField()
+
+    def validate_coupon_code(self, value):
+        try:
+            coupon = ProductCoupon.objects.get(code=value)
+            # You can add additional validation logic here
+            # For example, check if the coupon has expired
+            if coupon.expiry_date < timezone.now():
+                raise serializers.ValidationError("Coupon has expired")
+        except ProductCoupon.DoesNotExist:
+            raise serializers.ValidationError("Invalid coupon code")
+        return value

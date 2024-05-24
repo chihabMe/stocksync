@@ -74,5 +74,14 @@ class CustomUser(AbstractUser, PermissionsMixin, BaseModel):
 
     def __str__(self):
         return self.email
+    def save(self, *args, **kwargs):
+        print(self.user_type)
+        if self.user_type == CustomUser.UserTypesChoices.SELLER:
+            print("seller   ")
+            self.is_active = False
+        elif self.user_type == CustomUser.UserTypesChoices.CLIENT:
+            print("client   ")
+            self.is_active = True
+        super().save(*args, **kwargs)
 
 

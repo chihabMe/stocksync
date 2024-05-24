@@ -1,7 +1,8 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView,RetrieveUpdateDestroyAPIView,GenericAPIView,UpdateAPIView,DestroyAPIView
 from .models import Product,ProductCategory
+from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .serializers import  ProductSerializer,ProductCategoryManagerSerializer,ProductCategorySerializer,SellerProductSerializer,ProductCouponManagerSerializer
+from .serializers import  ProductSerializer,ProductCategoryManagerSerializer,ProductCategorySerializer,SellerProductSerializer,ProductCouponManagerSerializer,CouponSerializer
 from common.permissions    import IsAdmin,IsSeller,IsClient
 from rest_framework.response import Response
 from .models import ProductCoupon
@@ -86,6 +87,23 @@ class ProductSellerDestroyUpdateView(DestroyAPIView,UpdateAPIView):
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class ApplyCouponView(APIView):
+    permission_classes = [IsAuthenticated, IsClient]
+    
+    def post(self, request):
+        serializer = CouponSerializer(data=request.data)
+        if serializer.is_valid():
+            coupon_code = serializer.validated_data['coupon_code']
+            
+            # Check if the provided coupon code exists in the database
+            coupon = ProductCoupon.objects.filter(code=coupon_code).first()
+            if coupon:
+                discount_percentage = coupon.discount
+                return Response({'discount_percentage': discount_percentage}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'Invalid coupon code'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CouponsSellerListCreateView(ListCreateAPIView):
     serializer_class = ProductCouponManagerSerializer

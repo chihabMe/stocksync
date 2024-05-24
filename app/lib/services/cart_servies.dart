@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shop_app/endpoints.dart';
 import 'package:shop_app/models/CartItem.dart';
 import 'package:shop_app/models/Product.dart';
+import 'package:shop_app/screens/utils/dio_client.dart';
 
 class CartService {
   static const _cartKey = 'cart';
+  Dio dio = DioClient().dio;
 
   VoidCallback? cartChangeListener; // Add a callback for cart changes
 
@@ -92,5 +96,34 @@ class CartService {
   Future<void> clearCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(_cartKey);
+  }
+
+  Future<Map<String, dynamic>> applyCoupon(String couponCode) async {
+    try {
+      final response = await dio.post(
+        couponEndpoint,
+        data: {'coupon_code': couponCode},
+      );
+      if (response.statusCode == 200) {
+        // Coupon applied successfully, return the discount percentage
+        return {
+          'success': true,
+          'discount_percentage': response.data['discount_percentage']
+        };
+      } else {
+        return {
+          'success': false,
+          'discount_percentage': 0
+        }; // Invalid coupon code or other error
+      }
+    } catch (error) {
+      print("===================");
+      if (error is DioError && error.response != null) {
+        print("Error occurred: ${error.message}");
+        print("Response data: ${error.response!.data}");
+        print("===================");
+      }
+      throw Exception('Failed to apply coupon: $error');
+    }
   }
 }

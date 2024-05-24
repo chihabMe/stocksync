@@ -32,14 +32,30 @@ class AuthServices {
     }
   }
 
-  Future<bool> signup(String email, String username, String password) async {
+  Future<bool> signup(
+      String email, String username, String password, String userType) async {
+    print("0user type ----------------");
+    print(userType);
+    print("0----------------");
     try {
       final response = await dio.post(
         signupEndpoint,
-        data: {"email": email, "password": password, "username": username},
+        data: {
+          "email": email,
+          "password": password,
+          "password2": password,
+          "username": username,
+          "user_type": userType, // Add user type to the data being sent
+        },
       );
       return response.statusCode == 201;
     } catch (error) {
+      if (error is DioError) {
+        print("------------dio---------");
+        print(error.error);
+        print(error.response?.data);
+        print("------------dio---------");
+      }
       print("Error occurred: $error");
       rethrow;
     }

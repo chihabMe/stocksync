@@ -1,4 +1,4 @@
-const String api = "http://192.168.208.17:8000/api/v1/";
+const String api = "http://localhost:8000/api/v1/";
 const String productEndpoint = api + "products/";
 const String likedProductsEndpoint = api + "products/liked/";
 const String loginEndpoint = api + "auth/token/obtain/";
@@ -10,4 +10,5 @@ const String orderEndpoint = api + "orders/";
 const String complainEndpoint = api + "complains/";
 const String sellerProductsEndpoint = api + "products/seller/";
 const String sellerCouponsEndpoint = api + "products/coupons/";
+const String couponEndpoint = api + "products/coupon/validate/";
 // const String sellerOrdersEndpoint = api + "orders/seller/";

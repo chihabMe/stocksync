@@ -11,11 +11,13 @@ from .views import (ProductsAddListView,
                         ProductSellerListCreateView,
                         ProductSellerDestroyUpdateView,
                         CouponsSellerListCreateView,
-                        CouponsSellerDeleteView
+                        CouponsSellerDeleteView,
+                        ApplyCouponView
                      )
 
 urlpatterns = [
     path('', ProductsAddListView.as_view(), name='product-list'),
+    path('coupon/validate/', ApplyCouponView.as_view(), name='apply-coupon'),
     path('coupons/', CouponsSellerListCreateView.as_view(), name='seller-coupons'),
     path('coupons/<str:id>/', CouponsSellerDeleteView.as_view(), name='seller-coupon-delete'),
     path('seller/', ProductSellerListCreateView.as_view(), name='seller-product-list'),
