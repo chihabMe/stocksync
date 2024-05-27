@@ -150,11 +150,16 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "authentication.middleware.CookiesAuthentication"
+
     ),
 }
+
+ACCESS_TOKEN_LIFE_TIME = 60*60*30
+REFRESH_TOKEN_LIFE_TIME = 60*60*30
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=ACCESS_TOKEN_LIFE_TIME),
+    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=REFRESH_TOKEN_LIFE_TIME),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -201,4 +206,6 @@ APPEND_SLASH=False
 CORS_ALLOWED_ORIGINS = [
     os.environ.get("WEB_CLIENT_HOST"),
     "http://localhost:45139",
+    "http://localhost:3000",
 ]
+CORS_ALLOW_CREDENTIALS = True  # Allow credentials
