@@ -1,6 +1,7 @@
 # from django.utils.deprecation import MiddlewareMixin
 from rest_framework.request import Request
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
 # class AuthorizationCookieMiddleware(MiddlewareMixin):
 #     def process_request(self,request):
@@ -31,11 +32,13 @@ class CookiesAuthentication(JWTAuthentication):
 
     """
     def get_header(self, request: Request) -> bytes:
-        print("-------------")
         header =  request.COOKIES.get("Authorization")
-        print(header)
-        print("-------------")
-        # print(request.COOKIES)
         return header
     def get_raw_token(self, header: bytes) -> bytes | None:
-        return header.split(" ")[1]
+        pars  =  header.split(" ")[1]
+        if len(pars)!=2:
+            raise AuthenticationFailed(
+                _("Authorization header must contain two space-delimited values"),
+                code="bad_authorization_header",
+            )
+        return pars[1]
