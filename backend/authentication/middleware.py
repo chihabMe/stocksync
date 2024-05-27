@@ -35,10 +35,10 @@ class CookiesAuthentication(JWTAuthentication):
         header =  request.COOKIES.get("Authorization")
         return header
     def get_raw_token(self, header: bytes) -> bytes | None:
-        pars  =  header.split(" ")[1]
+        pars  =  header.split(" ")
         if len(pars)!=2:
             raise AuthenticationFailed(
-                _("Authorization header must contain two space-delimited values"),
+                ("Authorization header must contain two space-delimited values"),
                 code="bad_authorization_header",
             )
         return pars[1]
