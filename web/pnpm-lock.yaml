@@ -35,6 +35,9 @@ dependencies:
   '@t3-oss/env-core':
     specifier: ^0.10.1
     version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
+  '@t3-oss/env-nextjs':
+    specifier: ^0.10.1
+    version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
   '@tanstack/react-query':
     specifier: ^5.32.0
     version: 5.38.0(react@18.2.0)
@@ -47,6 +50,9 @@ dependencies:
   formik:
     specifier: ^2.4.5
     version: 2.4.5(react@18.2.0)
+  jiti:
+    specifier: ^1.21.0
+    version: 1.21.0
   lucide-react:
     specifier: ^0.341.0
     version: 0.341.0(react@18.2.0)
@@ -1080,6 +1086,20 @@ packages:
       typescript:
         optional: true
     dependencies:
+      typescript: 5.4.5
+      zod: 3.23.8
+    dev: false
+
+  /@t3-oss/env-nextjs@0.10.1(typescript@5.4.5)(zod@3.23.8):
+    resolution: {integrity: sha512-iy2qqJLnFh1RjEWno2ZeyTu0ufomkXruUsOZludzDIroUabVvHsrSjtkHqwHp1/pgPUzN3yBRHMILW162X7x2Q==}
+    peerDependencies:
+      typescript: '>=5.0.0'
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@t3-oss/env-core': 0.10.1(typescript@5.4.5)(zod@3.23.8)
       typescript: 5.4.5
       zod: 3.23.8
     dev: false

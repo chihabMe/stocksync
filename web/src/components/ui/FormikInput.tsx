@@ -5,6 +5,7 @@ import { useField } from "formik";
 import { cn } from "@/lib/utils";
 import { HTMLProps } from "react";
 interface Props extends HTMLProps<HTMLInputElement> {
+  name:string;
 }
 const FormikInput = ({ name, label, ...rest }: Props) => {
   const [field, values, actions] = useField({ name });

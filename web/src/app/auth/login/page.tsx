@@ -36,6 +36,7 @@ export default function LoginPage() {
             validationSchema={toFormikValidationSchema(loginSchema)}
             validateOnBlur={true}
             onSubmit={async (values, actions) => {
+              console.log("running");
               try {
                 const response = await loginServices(
                   values["email"],
@@ -45,7 +46,6 @@ export default function LoginPage() {
                   localStorage.setItem("accessToken", response.data.access);
                   localStorage.setItem("refreshToken", response.data.refresh);
                   console.log(response.data);
-                  // navigate("/admin");
                 }
               } catch (err) {
                 console.error(err);

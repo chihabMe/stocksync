@@ -1,15 +1,17 @@
+const API_V1 = "/api/v1";
 
+/// server api routes 
 
-export const API = process.env.API
-
-
-// auth routes 
-export const loginEndpoint = API+"/auth/token/obtain/"
-export const refreshEndpoint = API+"/auth/token/refresh/"
-export const logoutEndpoint = API+"/auth/token/logout/"
-export const meEndpoint = API+"/auth/me/"
+// auth routes
+export const loginEndpoint = API_V1 + "/auth/login/";
+export const refreshEndpoint = API_V1 + "/auth/token/refresh/";
+export const logoutEndpoint = API_V1 + "/auth/token/logout/";
+export const meEndpoint = API_V1 + "/auth/me/";
+export const verifyTokenEndpoints = API_V1+"/auth/token/verify/"
 
 
 // account routes
-export const signupEndpoint = API+"/accounts/register/"
+export const signupEndpoint = "/accounts/register/";
 
+//next api routes
+export const loginNotifyNextServer = "/api/auth/login/";
