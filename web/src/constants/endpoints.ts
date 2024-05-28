@@ -15,7 +15,7 @@ export const verifyTokenEndpoints = API_V1+"/auth/token/verify/"
 
 
 // account routes
-export const signupEndpoint = "/accounts/register/";
+export const signupEndpoint = API_V1+ "/accounts/register/";
 
 //next api routes
 export const loginNotifyNextServer = "/api/auth/login/";
