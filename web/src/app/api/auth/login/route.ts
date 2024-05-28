@@ -24,14 +24,14 @@ export const POST = async (request: Request) => {
       token: data.refresh,
     });
     const response = Response.json({ message: "success" });
-    cookies().set("access", data.access, {
+    cookies().set("next_access", data.access, {
       maxAge: 60 * 30,
       httpOnly: true,
       path: "/",
       secure: process.env.NODE_ENV != "development",
     });
 
-    cookies().set("refresh", data.access, {
+    cookies().set("next_refresh", data.access, {
       maxAge: 60 * 60 * 24 * 20,
       httpOnly: true,
       path: "/",

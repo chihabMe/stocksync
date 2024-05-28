@@ -5,22 +5,21 @@ import axios from "axios";
 import { access } from "fs";
 
 export const loginServices = async (email: string, password: string) => {
-  try {
-    const response = await axiosClient.post<ILoginResponse>(loginEndpoint, {
-      email,
-      password,
-    });
-    if (response.status == 200) {
-      await axios.post(
-        loginNotifyNextServer,
-        {
-          access: response.data.access,
-          refresh: response.data.refresh,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-    }
-  } catch (err) {}
+  let response = await axiosClient.post<ILoginResponse>(loginEndpoint, {
+    email,
+    password,
+  });
+  if (response.status == 200) {
+    response = await axios.post(
+      loginNotifyNextServer,
+      {
+        access: response.data.access,
+        refresh: response.data.refresh,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+  return response;
 };

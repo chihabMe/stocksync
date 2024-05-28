@@ -14,12 +14,14 @@ import FormikInput from "@/components/ui/FormikInput";
 import { Formik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { loginSchema } from "@/app/schemas/auth.schema";
+import { useRouter } from "next/navigation";
 
 const initialForm = {
   email: "",
   password: "",
 };
 export default function LoginPage() {
+  const router = useRouter();
   return (
     <main className="w-full min-h-screen flex justify-center items-center">
       <Card className="w-full max-w-md">
@@ -36,16 +38,14 @@ export default function LoginPage() {
             validationSchema={toFormikValidationSchema(loginSchema)}
             validateOnBlur={true}
             onSubmit={async (values, actions) => {
-              console.log("running");
               try {
                 const response = await loginServices(
                   values["email"],
                   values["password"]
                 );
-                if (response.data) {
-                  localStorage.setItem("accessToken", response.data.access);
-                  localStorage.setItem("refreshToken", response.data.refresh);
-                  console.log(response.data);
+                console.log(response);
+                if (response && response.status == 200) {
+                  router.push("/");
                 }
               } catch (err) {
                 console.error(err);
