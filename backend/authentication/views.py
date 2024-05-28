@@ -7,7 +7,7 @@ from rest_framework.generics import GenericAPIView , DestroyAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from .serializers import AuthenticatedUserSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from django.conf import settings
 
@@ -25,7 +25,36 @@ class TokenLogoutView(APIView):
         data = {"message": "Successfully logged out"}
         return Response(status=status.HTTP_200_OK, data=data)
 
+class RefreshAuthCookies(TokenRefreshView):
+    permission_classes = [AllowAny]
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get('refresh')
 
+        if refresh_token is None:
+            return Response({'detail': 'Refresh token not found in cookies'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        try:
+            refresh_token_obj = RefreshToken(refresh_token)
+            access_token = str(refresh_token_obj.access_token)
+
+            response = Response({'access': access_token}, status=status.HTTP_200_OK)
+
+            # Set the new access token in the cookies
+            secure = not settings.DEBUG
+            response.set_cookie(
+                'Authorization', 
+                f'Bearer {access_token}',
+                max_age=settings.ACCESS_TOKEN_LIFE_TIME,
+                httponly=True,
+                secure=secure,
+                path="/"
+            )
+
+            return response
+
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
 class LoginViewWithCookies(TokenObtainPairView):
 
     def post(self, request: Request, *args, **kwargs) -> Response:
